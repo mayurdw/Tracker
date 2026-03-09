@@ -17,8 +17,8 @@ android {
         applicationId = "com.mayurdw.fibretracker"
         minSdk = 29
         targetSdk = 36
-        versionCode = 5
-        versionName = "0.5"
+        versionCode = 6
+        versionName = "0.6"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -90,7 +90,7 @@ dependencies {
     implementation(libs.hilt)
     implementation(libs.hilt.navigation)
     implementation(libs.datetime)
-    implementation (libs.androidx.compose.material.icons.extended)
+    implementation(libs.androidx.compose.material.icons.extended)
 
     testImplementation(libs.junit)
     testImplementation(libs.androidx.room.test)
