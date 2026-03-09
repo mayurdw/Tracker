@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -34,8 +33,6 @@ import com.mayurdw.fibretracker.ui.destinations.SelectFoodToEdit
 import com.mayurdw.fibretracker.ui.destinations.getDestination
 import com.mayurdw.fibretracker.ui.screens.EditMenuScreen
 import com.mayurdw.fibretracker.ui.screens.FibreTrackerTopBar
-import com.mayurdw.fibretracker.ui.screens.core.TrackerBottomBar
-import com.mayurdw.fibretracker.ui.screens.core.bottomBarButtons
 import com.mayurdw.fibretracker.ui.theme.FibreTrackerTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -61,12 +58,6 @@ class MainActivity : ComponentActivity() {
                             onFoodMenuPressed = {
                                 navController.navigate(EditMenu)
                             })
-                    },
-                    bottomBar = {
-                        TrackerBottomBar(
-                            modifier = Modifier.navigationBarsPadding(),
-                            items = bottomBarButtons
-                        )
                     },
                     floatingActionButton = {
                         if (Home == destination) {
