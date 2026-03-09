@@ -45,7 +45,10 @@ class HomeScreenViewModel @Inject constructor(
                 getCurrentDateEntryData(currentDate).collectLatest { current ->
                     val foodList = current.map { entryData ->
                         convertFoodEntryEntityToFoodListItem(entryData)
+                    }.sortedBy { listItem ->
+                        listItem.foodName
                     }
+
                     val dateFormat = LocalDate.Format {
                         day()
                         char('/')
