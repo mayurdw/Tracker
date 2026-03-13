@@ -13,10 +13,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons.Filled
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.FoodBank
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Upcoming
 import androidx.compose.material3.Icon
@@ -111,37 +112,51 @@ private fun BoxScope.BottomNavPanelWithCutOut() {
             .background(MaterialTheme.colorScheme.primaryContainer)
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            BottomBarIcon(
-                icon = Filled.Home,
-                label = "Home",
-                isSelected = true
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(0.4f)
+                    .padding(horizontal = 24.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                BottomBarIcon(
+                    icon = Filled.Home,
+                    label = "Home",
+                    isSelected = true
+                )
 
-            BottomBarIcon(
-                icon = Filled.Upcoming,
-                label = "Plan",
-                isSelected = false
-            )
+                BottomBarIcon(
+                    icon = Filled.Upcoming,
+                    label = "Plan",
+                    isSelected = false
+                )
+            }
 
-            Spacer(modifier = Modifier.width(24.dp))
+            Spacer(modifier = Modifier.fillMaxWidth(0.35f))
 
-            BottomBarIcon(
-                icon = Filled.Home,
-                label = "Home",
-                isSelected = false
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                BottomBarIcon(
+                    icon = Filled.FoodBank,
+                    label = "Edit",
+                    isSelected = false
+                )
 
-            BottomBarIcon(
-                icon = Filled.Upcoming,
-                label = "Plan",
-                isSelected = false
-            )
+                BottomBarIcon(
+                    icon = Filled.BarChart,
+                    label = "Relation",
+                    isSelected = false
+                )
+            }
         }
+
+
     }
 }
 
