@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
@@ -35,9 +36,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.mayurdw.fibretracker.ui.destinations.AddFoodItem
+import com.mayurdw.fibretracker.ui.destinations.Chart
 import com.mayurdw.fibretracker.ui.destinations.Destinations
 import com.mayurdw.fibretracker.ui.destinations.EditMenu
 import com.mayurdw.fibretracker.ui.destinations.Home
+import com.mayurdw.fibretracker.ui.destinations.Plan
 import com.mayurdw.fibretracker.ui.theme.FibreTrackerTheme
 
 @PreviewLightDark
@@ -82,7 +85,10 @@ fun BottomBar(
         mutableIntStateOf(0)
     }
 
-    Box {
+    Box(
+        modifier = modifier
+            .navigationBarsPadding()
+    ) {
         Row(
             modifier = modifier
                 .fillMaxWidth()
@@ -128,7 +134,7 @@ fun BottomBar(
                     unselectedIcon = Icons.Outlined.Upcoming,
                     contentDescription = "Message"
                 ) {
-                    navigationDestination(Home)
+                    navigationDestination(Plan)
                     navNum = 2
                 }
 
@@ -138,7 +144,7 @@ fun BottomBar(
                     unselectedIcon = Icons.Outlined.BarChart,
                     contentDescription = "Message"
                 ) {
-                    navigationDestination(Home)
+                    navigationDestination(Chart)
                     navNum = 3
                 }
             }

@@ -4,10 +4,50 @@ import androidx.annotation.StringRes
 import com.mayurdw.fibretracker.R
 import kotlinx.serialization.Serializable
 
-sealed interface Destinations
+sealed interface Destinations {
+    val bottomBarVisible: Boolean
+        get() = false
+
+    val backButtonVisible: Boolean
+        get() = true
+}
 
 @Serializable
-object Home : Destinations
+object Home : Destinations {
+    override val bottomBarVisible: Boolean
+        get() = true
+    override val backButtonVisible: Boolean
+        get() = false
+}
+
+
+@Serializable
+object EditMenu : Destinations {
+    override val bottomBarVisible: Boolean
+        get() = true
+    override val backButtonVisible: Boolean
+        get() = false
+}
+
+
+@Serializable
+object Plan : Destinations {
+    override val bottomBarVisible: Boolean
+        get() = true
+    override val backButtonVisible: Boolean
+        get() = false
+}
+
+@Serializable
+object Chart : Destinations {
+    override val bottomBarVisible: Boolean
+        get() = true
+    override val backButtonVisible: Boolean
+        get() = false
+}
+
+@Serializable
+object Setting : Destinations
 
 @Serializable
 object SelectFoodToEdit : Destinations
@@ -33,9 +73,6 @@ data class EditEntry(
     val selectedEntryId: Int
 ) : Destinations
 
-@Serializable
-object EditMenu : Destinations
-
 @StringRes
 fun getTitle(destinations: Destinations): Int {
     return when (destinations) {
@@ -47,6 +84,9 @@ fun getTitle(destinations: Destinations): Int {
         is AddAmountItem -> R.string.add_amount
         is EditEntry -> R.string.edit_food_entry
         is EnterEditedFood -> R.string.edit_existing_food
+        is Chart -> R.string.chart
+        is Plan -> R.string.plan
+        is Setting -> R.string.settings
     }
 }
 
@@ -60,7 +100,10 @@ fun getDestination(routeName: String?): Destinations {
             AddAmountItem(-1),
             EditEntry(-1),
             SelectFoodToEdit,
-            EnterEditedFood(-1)
+            EnterEditedFood(-1),
+            Chart,
+            Plan,
+            Setting
         )
 
         for (screen in screens) {

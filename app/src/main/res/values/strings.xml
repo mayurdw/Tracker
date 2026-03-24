@@ -11,4 +11,7 @@
     <string name="select_food_to_edit">Select Food To Edit</string>
     <string name="edit_existing_food">Edit Existing Food</string>
     <string name="update">Update</string>
+    <string name="plan">Plan Your Day</string>
+    <string name="chart">Visualise</string>
+    <string name="settings">Settings</string>
 </resources>

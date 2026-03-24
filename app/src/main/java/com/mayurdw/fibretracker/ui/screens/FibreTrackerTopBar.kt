@@ -1,7 +1,9 @@
 package com.mayurdw.fibretracker.ui.screens
 
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.Icons.Filled
 import androidx.compose.material.icons.filled.ChevronLeft
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -10,12 +12,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.mayurdw.fibretracker.R
 import com.mayurdw.fibretracker.ui.destinations.AddAmountItem
 import com.mayurdw.fibretracker.ui.destinations.AddFoodItem
 import com.mayurdw.fibretracker.ui.destinations.AddNewFoodItem
@@ -31,7 +31,7 @@ import com.mayurdw.fibretracker.ui.theme.FibreTrackerTheme
 fun FibreTrackerTopBar(
     currentDestination: Destinations = Home,
     onBackPressed: () -> Unit = {},
-    onFoodMenuPressed: () -> Unit = {}
+    settingsActionPressed: () -> Unit = {}
 ) {
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
@@ -48,7 +48,7 @@ fun FibreTrackerTopBar(
             )
         },
         navigationIcon = {
-            if (Home != currentDestination) {
+            if (currentDestination.backButtonVisible) {
                 IconButton(onClick = onBackPressed) {
                     Icon(
                         imageVector = Filled.ChevronLeft,
@@ -58,10 +58,10 @@ fun FibreTrackerTopBar(
             }
         },
         actions = {
-            if (Home == currentDestination) {
-                IconButton(onClick = onFoodMenuPressed) {
+            if (!currentDestination.backButtonVisible) {
+                IconButton(onClick = settingsActionPressed) {
                     Icon(
-                        painterResource(R.drawable.food),
+                        imageVector = Icons.Filled.Settings,
                         contentDescription = null
                     )
                 }

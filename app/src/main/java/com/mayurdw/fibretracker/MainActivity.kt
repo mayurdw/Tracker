@@ -6,11 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons.Filled
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
@@ -23,6 +18,8 @@ import com.mayurdw.fibretracker.ui.destinations.AddFoodItem
 import com.mayurdw.fibretracker.ui.destinations.AddFoodItemScreen
 import com.mayurdw.fibretracker.ui.destinations.AddNewFoodItem
 import com.mayurdw.fibretracker.ui.destinations.AddNewFoodScreen
+import com.mayurdw.fibretracker.ui.destinations.Chart
+import com.mayurdw.fibretracker.ui.destinations.ChartScreen
 import com.mayurdw.fibretracker.ui.destinations.EditEntry
 import com.mayurdw.fibretracker.ui.destinations.EditFoodEntryScreen
 import com.mayurdw.fibretracker.ui.destinations.EditMenu
@@ -30,7 +27,11 @@ import com.mayurdw.fibretracker.ui.destinations.EnterEditedFood
 import com.mayurdw.fibretracker.ui.destinations.FoodQuantityScreen
 import com.mayurdw.fibretracker.ui.destinations.Home
 import com.mayurdw.fibretracker.ui.destinations.HomeScreen
+import com.mayurdw.fibretracker.ui.destinations.Plan
+import com.mayurdw.fibretracker.ui.destinations.PlanScreen
 import com.mayurdw.fibretracker.ui.destinations.SelectFoodToEdit
+import com.mayurdw.fibretracker.ui.destinations.Setting
+import com.mayurdw.fibretracker.ui.destinations.SettingsScreen
 import com.mayurdw.fibretracker.ui.destinations.getDestination
 import com.mayurdw.fibretracker.ui.screens.EditMenuScreen
 import com.mayurdw.fibretracker.ui.screens.FibreTrackerTopBar
@@ -57,25 +58,16 @@ class MainActivity : ComponentActivity() {
                             onBackPressed = {
                                 navController.navigateUp()
                             },
-                            onFoodMenuPressed = {
-                                navController.navigate(EditMenu)
+                            settingsActionPressed = {
+                                navController.navigate(Setting)
                             })
                     },
-                    floatingActionButton = {
-                        if (Home == destination) {
-                            FloatingActionButton(onClick = {
-                                navController.navigate(AddFoodItem)
-                            }) {
-                                Icon(
-                                    imageVector = Filled.Add,
-                                    contentDescription = "",
-                                    tint = MaterialTheme.colorScheme.onPrimaryContainer
-                                )
+                    bottomBar = {
+                        if (destination.bottomBarVisible) {
+                            BottomBar {
+                                navController.navigate(it)
                             }
                         }
-                    },
-                    bottomBar = {
-                        BottomBar { }
                     },
                     modifier = Modifier
                         .fillMaxSize()
@@ -136,6 +128,18 @@ class MainActivity : ComponentActivity() {
                             AddNewFoodScreen(selectedFoodId = foodId.selectedFoodId) {
                                 navController.navigateUp()
                             }
+                        }
+
+                        composable<Plan> {
+                            PlanScreen()
+                        }
+
+                        composable<Chart> {
+                            ChartScreen()
+                        }
+
+                        composable<Setting> {
+                            SettingsScreen()
                         }
                     }
                 }
