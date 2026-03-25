@@ -20,6 +20,10 @@ android {
         versionCode = 6
         versionName = "0.6"
 
+        ksp {
+            arg("room.schemaLocation", "$projectDir/schemas")
+        }
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

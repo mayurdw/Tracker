@@ -85,16 +85,14 @@ fun BottomBar(
         mutableIntStateOf(0)
     }
 
-    Box(
-        modifier = modifier
-            .navigationBarsPadding()
-    ) {
+    Box {
         Row(
             modifier = modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
                 .clip(RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp))
                 .background(MaterialTheme.colorScheme.primaryContainer)
+                .navigationBarsPadding()
                 .padding(vertical = 16.dp, horizontal = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
@@ -155,6 +153,7 @@ fun BottomBar(
                 navigationDestination(AddFoodItem)
             },
             modifier = Modifier
+                .navigationBarsPadding()
                 .padding(bottom = 35.dp)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.primary)

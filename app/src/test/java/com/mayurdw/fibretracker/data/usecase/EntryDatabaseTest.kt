@@ -327,5 +327,5 @@ class EntryDatabaseTest {
         }
     }
 
-    inline fun getCurrentDate() = Clock.System.todayIn(TimeZone.currentSystemDefault())
+    fun getCurrentDate() = Clock.System.todayIn(TimeZone.currentSystemDefault())
 }
