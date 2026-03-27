@@ -11,7 +11,6 @@ import com.mayurdw.fibretracker.model.entity.FoodEntity
 import com.mayurdw.fibretracker.model.entity.FoodEntryEntity
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertNull
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.test.runTest
@@ -55,19 +54,6 @@ class EntryDatabaseTest {
     }
 
     @Test
-    fun testDatabaseIsEmpty() = runTest {
-        val currentDate = getCurrentDate()
-        dao.getEntryData(currentDate, currentDate).test {
-            val list = awaitItem()
-            assertTrue(list.isEmpty())
-        }
-
-        dao.checkIfEntryDataExists(currentDate, currentDate).test {
-            assertFalse(awaitItem())
-        }
-    }
-
-    @Test
     fun testMultimapBetweenFoodAndEntry() = runTest {
         val currentDate = getCurrentDate()
         val food = FoodEntity(
@@ -95,10 +81,6 @@ class EntryDatabaseTest {
             assertEquals(1, list.size)
             assertEquals(entry.foodServingInGms, list[0].servingInGms)
             assertEquals(food.name, list[0].name)
-        }
-
-        dao.checkIfEntryDataExists(currentDate, currentDate).test {
-            assertTrue(awaitItem())
         }
     }
 

@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.mayurdw.fibretracker.ui.destinations.AddFoodItem
 import com.mayurdw.fibretracker.ui.destinations.Chart
+import com.mayurdw.fibretracker.ui.destinations.ChooseEntry
 import com.mayurdw.fibretracker.ui.destinations.Destinations
 import com.mayurdw.fibretracker.ui.destinations.EditMenu
 import com.mayurdw.fibretracker.ui.destinations.Home
@@ -150,7 +151,7 @@ fun BottomBar(
 
         IconButton(
             onClick = {
-                navigationDestination(AddFoodItem)
+                navigationDestination(ChooseEntry)
             },
             modifier = Modifier
                 .navigationBarsPadding()

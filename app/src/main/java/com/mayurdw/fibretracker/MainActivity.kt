@@ -20,6 +20,7 @@ import com.mayurdw.fibretracker.ui.destinations.AddNewFoodItem
 import com.mayurdw.fibretracker.ui.destinations.AddNewFoodScreen
 import com.mayurdw.fibretracker.ui.destinations.Chart
 import com.mayurdw.fibretracker.ui.destinations.ChartScreen
+import com.mayurdw.fibretracker.ui.destinations.ChooseEntry
 import com.mayurdw.fibretracker.ui.destinations.EditEntry
 import com.mayurdw.fibretracker.ui.destinations.EditFoodEntryScreen
 import com.mayurdw.fibretracker.ui.destinations.EditMenu
@@ -29,12 +30,15 @@ import com.mayurdw.fibretracker.ui.destinations.Home
 import com.mayurdw.fibretracker.ui.destinations.HomeScreen
 import com.mayurdw.fibretracker.ui.destinations.Plan
 import com.mayurdw.fibretracker.ui.destinations.PlanScreen
+import com.mayurdw.fibretracker.ui.destinations.PoopQuality
 import com.mayurdw.fibretracker.ui.destinations.SelectFoodToEdit
 import com.mayurdw.fibretracker.ui.destinations.Setting
 import com.mayurdw.fibretracker.ui.destinations.SettingsScreen
 import com.mayurdw.fibretracker.ui.destinations.getDestination
+import com.mayurdw.fibretracker.ui.screens.ChooseEntryScreen
 import com.mayurdw.fibretracker.ui.screens.EditMenuScreen
 import com.mayurdw.fibretracker.ui.screens.FibreTrackerTopBar
+import com.mayurdw.fibretracker.ui.screens.PoopQualityScreen
 import com.mayurdw.fibretracker.ui.screens.core.BottomBar
 import com.mayurdw.fibretracker.ui.theme.FibreTrackerTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -140,6 +144,16 @@ class MainActivity : ComponentActivity() {
 
                         composable<Setting> {
                             SettingsScreen()
+                        }
+
+                        composable<ChooseEntry>{
+                            ChooseEntryScreen {
+                                navController.navigate(it)
+                            }
+                        }
+
+                        composable<PoopQuality> {
+                            PoopQualityScreen()
                         }
                     }
                 }

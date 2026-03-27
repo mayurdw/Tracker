@@ -50,6 +50,10 @@ object Chart : Destinations {
 object Setting : Destinations
 
 @Serializable
+object ChooseEntry : Destinations
+
+
+@Serializable
 object SelectFoodToEdit : Destinations
 
 @Serializable
@@ -73,6 +77,9 @@ data class EditEntry(
     val selectedEntryId: Int
 ) : Destinations
 
+@Serializable
+object PoopQuality : Destinations
+
 @StringRes
 fun getTitle(destinations: Destinations): Int {
     return when (destinations) {
@@ -87,6 +94,8 @@ fun getTitle(destinations: Destinations): Int {
         is Chart -> R.string.chart
         is Plan -> R.string.plan
         is Setting -> R.string.settings
+        is ChooseEntry -> R.string.choose_entry
+        is PoopQuality -> R.string.poop_quality
     }
 }
 
@@ -103,7 +112,9 @@ fun getDestination(routeName: String?): Destinations {
             EnterEditedFood(-1),
             Chart,
             Plan,
-            Setting
+            Setting,
+            ChooseEntry,
+            PoopQuality
         )
 
         for (screen in screens) {

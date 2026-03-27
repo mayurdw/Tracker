@@ -14,4 +14,6 @@
     <string name="plan">Plan Your Day</string>
     <string name="chart">Visualise</string>
     <string name="settings">Settings</string>
+    <string name="choose_entry">Choose Entry</string>
+    <string name="poop_quality">Bowel Index</string>
 </resources>
