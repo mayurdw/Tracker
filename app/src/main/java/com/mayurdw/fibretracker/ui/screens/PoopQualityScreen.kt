@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -13,6 +14,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,36 +22,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.mayurdw.fibretracker.R
+import com.mayurdw.fibretracker.model.domain.PoopType
 import com.mayurdw.fibretracker.ui.theme.FibreTrackerTheme
 
 
-enum class PoopQuality(val image: Int, val desc: String) {
-    TYPE_7(
-        R.drawable.type_7, "Separate Hard Lumps, like little pebbles (Hard to pass)"
-    ),
-    TYPE_6(
-        R.drawable.type_6, "Hard and lumpy and starting to resemble a sausage"
-    ),
-    TYPE_5(
-        R.drawable.type_5, "Sausage-shaped with cracks on the surface"
-    ),
-    TYPE_4(
-        R.drawable.type_4, "Thinner and more snakelike, plus smooth and soft"
-    ),
-    TYPE_3(
-        R.drawable.type_3, "Soft blobs with clear cut edges"
-    ),
-    TYPE_2(
-        R.drawable.type_2, "Fluffy, mushy pieces with ragged edges"
-    ),
-    TYPE_1(
-        R.drawable.type_1, "Watery with no solid pieces"
-    )
-}
-
 @Composable
-fun PoopQualityScreen() {
+fun PoopQualityScreen(
+    onQualitySelected: (quality: PoopType) -> Unit
+) {
     LazyVerticalGrid(
         modifier = Modifier
             .fillMaxSize()
@@ -60,19 +40,34 @@ fun PoopQualityScreen() {
         horizontalArrangement = Arrangement.spacedBy(16.dp)
 
     ) {
-        items(PoopQuality.entries.toTypedArray()) {
+        items(PoopType.entries.toTypedArray()) {
             Card(
                 colors = CardDefaults.elevatedCardColors(
                     contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                     containerColor = MaterialTheme.colorScheme.primaryContainer
-                )
+                ),
+                onClick = { onQualitySelected(it) }
             ) {
                 Image(
                     modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
                         .width(172.dp)
                         .height(96.dp),
                     painter = painterResource(it.image),
                     contentDescription = null
+                )
+
+                HorizontalDivider(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.onPrimaryContainer)
+                )
+
+                Text(
+                    modifier = Modifier.padding(start = 8.dp, top = 16.dp),
+                    style = MaterialTheme.typography.bodyLarge,
+                    text = it.title
                 )
 
                 Text(
@@ -89,6 +84,8 @@ fun PoopQualityScreen() {
 @Composable
 fun PreviewPoopQualityScreen() {
     FibreTrackerTheme {
-        PoopQualityScreen()
+        PoopQualityScreen {
+
+        }
     }
 }

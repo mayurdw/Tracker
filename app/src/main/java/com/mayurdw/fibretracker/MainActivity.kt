@@ -21,6 +21,7 @@ import com.mayurdw.fibretracker.ui.destinations.AddNewFoodScreen
 import com.mayurdw.fibretracker.ui.destinations.Chart
 import com.mayurdw.fibretracker.ui.destinations.ChartScreen
 import com.mayurdw.fibretracker.ui.destinations.ChooseEntry
+import com.mayurdw.fibretracker.ui.destinations.ConfirmPoopQuality
 import com.mayurdw.fibretracker.ui.destinations.EditEntry
 import com.mayurdw.fibretracker.ui.destinations.EditFoodEntryScreen
 import com.mayurdw.fibretracker.ui.destinations.EditMenu
@@ -36,6 +37,7 @@ import com.mayurdw.fibretracker.ui.destinations.Setting
 import com.mayurdw.fibretracker.ui.destinations.SettingsScreen
 import com.mayurdw.fibretracker.ui.destinations.getDestination
 import com.mayurdw.fibretracker.ui.screens.ChooseEntryScreen
+import com.mayurdw.fibretracker.ui.screens.ConfirmPoopQualityScreen
 import com.mayurdw.fibretracker.ui.screens.EditMenuScreen
 import com.mayurdw.fibretracker.ui.screens.FibreTrackerTopBar
 import com.mayurdw.fibretracker.ui.screens.PoopQualityScreen
@@ -146,14 +148,22 @@ class MainActivity : ComponentActivity() {
                             SettingsScreen()
                         }
 
-                        composable<ChooseEntry>{
+                        composable<ChooseEntry> {
                             ChooseEntryScreen {
                                 navController.navigate(it)
                             }
                         }
 
                         composable<PoopQuality> {
-                            PoopQualityScreen()
+                            PoopQualityScreen {
+                                navController.navigate(ConfirmPoopQuality(it))
+                            }
+                        }
+
+                        composable<ConfirmPoopQuality> {
+                            val type: ConfirmPoopQuality = it.toRoute()
+
+                            ConfirmPoopQualityScreen(type = type.quality)
                         }
                     }
                 }
