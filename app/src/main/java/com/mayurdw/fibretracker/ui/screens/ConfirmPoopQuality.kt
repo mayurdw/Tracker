@@ -1,5 +1,6 @@
 package com.mayurdw.fibretracker.ui.screens
 
+import android.icu.util.Calendar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,6 +22,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.mayurdw.fibretracker.R
 import com.mayurdw.fibretracker.model.domain.PoopType
+import com.mayurdw.fibretracker.ui.screens.core.DateDialog
 import com.mayurdw.fibretracker.ui.screens.core.TimeDialog
 import com.mayurdw.fibretracker.ui.theme.FibreTrackerTheme
 
@@ -156,7 +158,10 @@ fun ConfirmPoopQualityScreenLayout(
     }
 
     if (showDateDialog) {
-
+        DateDialog(
+            dateInMilliSec = Calendar.getInstance().timeInMillis,
+            onDismiss = {}
+        ) { }
     }
 
 }
@@ -166,7 +171,7 @@ fun ConfirmPoopQualityScreenLayout(
 @Composable
 private fun PreviewConfirmPoopQualityScreen() {
     FibreTrackerTheme {
-        ConfirmPoopQualityScreenLayout (
+        ConfirmPoopQualityScreenLayout(
             type = PoopType.TYPE_4,
             formattedDate = "23/04/26",
             formattedTime = "15.28 pm",
@@ -179,6 +184,22 @@ private fun PreviewConfirmPoopQualityScreen() {
     }
 }
 
+@PreviewLightDark
+@Composable
+private fun PreviewDateDialog() {
+    FibreTrackerTheme {
+        ConfirmPoopQualityScreenLayout(
+            type = PoopType.TYPE_4,
+            formattedDate = "23/04/26",
+            formattedTime = "15.28 pm",
+            showTimeDialog = false,
+            showDateDialog = true,
+            onTimeUpdated = { _, _ -> },
+            onTypeClicked = {},
+            onSubmitClicked = {}
+        )
+    }
+}
 
 @PreviewLightDark
 @Composable

@@ -1,22 +1,19 @@
 package com.mayurdw.fibretracker.ui.screens.core
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
+import androidx.compose.material3.TimePickerDialog
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import com.mayurdw.fibretracker.ui.theme.FibreTrackerTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -26,52 +23,42 @@ fun TimeDialog(
     min: Int,
     onDismiss: () -> Unit,
     onConfirmation: (
-            hour: Int,
-            min: Int
-        ) -> Unit
+        hour: Int,
+        min: Int
+    ) -> Unit
 ) {
     val timePickerState = rememberTimePickerState(
         initialHour = hour,
         initialMinute = min,
-        is24Hour = true
+        is24Hour = false
     )
 
-    Dialog(onDismissRequest = onDismiss) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(all = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            TimePicker(
-                state = timePickerState,
+    TimePickerDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                modifier = Modifier.fillMaxWidth().padding(all = 8.dp),
+                text = "Select Time",
+                textAlign = TextAlign.Start,
+                style = MaterialTheme.typography.bodySmall
             )
-
-            HorizontalDivider(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp)
-            )
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Button(onClick = onDismiss) {
-                    Text("Dismiss")
-                }
-
-                Button(onClick = {
-                    onConfirmation(
-                        timePickerState.hour, timePickerState.minute
-                    )
-                }) {
-                    Text("Confirm")
-                }
+        },
+        confirmButton = {
+            TextButton(onClick = {
+                onConfirmation(timePickerState.hour, timePickerState.minute)
+            }) {
+                Text("OK")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = {
+                onDismiss
+            }) {
+                Text("Cancel")
             }
         }
+    ) {
+        TimePicker(state = timePickerState)
     }
 }
 
