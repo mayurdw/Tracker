@@ -14,31 +14,72 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mayurdw.fibretracker.R
 import com.mayurdw.fibretracker.model.domain.PoopType
 import com.mayurdw.fibretracker.ui.screens.core.DateDialog
+import com.mayurdw.fibretracker.ui.screens.core.LoadingScreen
 import com.mayurdw.fibretracker.ui.screens.core.TimeDialog
 import com.mayurdw.fibretracker.ui.theme.FibreTrackerTheme
+import com.mayurdw.fibretracker.viewmodels.ConfirmPoopQualityUiData
+import com.mayurdw.fibretracker.viewmodels.ConfirmPoopQualityViewModel
+import com.mayurdw.fibretracker.viewmodels.UIState
 
 @Composable
-fun ConfirmPoopQualityScreen(type: PoopType) {
+fun ConfirmPoopQualityScreen(
+    type: PoopType,
+    viewModel: ConfirmPoopQualityViewModel = hiltViewModel(),
+    onTypeClicked: () -> Unit
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.handlePoopType(type)
+    }
+
+    when (uiState) {
+        is UIState.Loading -> LoadingScreen()
+        is UIState.Success -> {
+            val poopData: ConfirmPoopQualityUiData =
+                (uiState as UIState.Success<*>).data as ConfirmPoopQualityUiData
+            ConfirmPoopQualityScreenLayout(
+                uiData = poopData,
+                onTimeUpdated = { _, _ -> },
+                onTypeClicked = onTypeClicked,
+                onDateDialogDismissed = {},
+                onDateDialogOpened = {},
+                onTimeDialogDismissed = {},
+                onTimeDialogOpened = {},
+                onDateUpdated = {},
+                onSubmitClicked = {},
+            )
+        }
+
+        else -> {}
+    }
 
 }
 
 @Composable
 fun ConfirmPoopQualityScreenLayout(
-    type: PoopType,
-    formattedTime: String,
-    formattedDate: String,
-    showTimeDialog: Boolean,
-    showDateDialog: Boolean,
+    uiData: ConfirmPoopQualityUiData,
+    onDateDialogDismissed: () -> Unit,
+    onDateDialogOpened: () -> Unit,
+    onTimeDialogDismissed: () -> Unit,
+    onTimeDialogOpened: () -> Unit,
     onTimeUpdated: (hour: Int, min: Int) -> Unit,
+    onDateUpdated: (newDate: Long?) -> Unit,
     onTypeClicked: () -> Unit,
     onSubmitClicked: () -> Unit,
 ) {
@@ -83,7 +124,7 @@ fun ConfirmPoopQualityScreenLayout(
                     Text(
                         modifier = Modifier
                             .padding(8.dp),
-                        text = type.title,
+                        text = uiData.type.title,
                         textAlign = TextAlign.Center
                     )
                 }
@@ -101,12 +142,12 @@ fun ConfirmPoopQualityScreenLayout(
 
                 OutlinedCard(
                     modifier = Modifier.heightIn(48.dp),
-                    onClick = {},
+                    onClick = onDateDialogOpened,
                 ) {
                     Text(
                         modifier = Modifier
                             .padding(8.dp),
-                        text = formattedDate,
+                        text = uiData.formattedDate,
                         textAlign = TextAlign.Center
                     )
                 }
@@ -124,12 +165,12 @@ fun ConfirmPoopQualityScreenLayout(
 
                 OutlinedCard(
                     modifier = Modifier.heightIn(48.dp),
-                    onClick = {},
+                    onClick = onTimeDialogOpened,
                 ) {
                     Text(
                         modifier = Modifier
                             .padding(8.dp),
-                        text = formattedTime,
+                        text = uiData.formattedTime,
                         textAlign = TextAlign.Center
                     )
                 }
@@ -142,78 +183,84 @@ fun ConfirmPoopQualityScreenLayout(
                 .padding(bottom = 32.dp), onClick = onSubmitClicked
         ) {
             Text(stringResource(R.string.submit))
-
         }
     }
 
 
 
-    if (showTimeDialog) {
+    if (uiData.showTimeDialog) {
         TimeDialog(
             hour = 12,
             min = 23,
-            onDismiss = { },
+            onDismiss = onTimeDialogDismissed,
             onConfirmation = onTimeUpdated
         )
     }
 
-    if (showDateDialog) {
+    if (uiData.showDateDialog) {
         DateDialog(
             dateInMilliSec = Calendar.getInstance().timeInMillis,
-            onDismiss = {}
-        ) { }
+            onDismiss = onDateDialogDismissed,
+            onConfirmation = onDateUpdated
+        )
     }
 
 }
 
 
-@PreviewLightDark
-@Composable
-private fun PreviewConfirmPoopQualityScreen() {
-    FibreTrackerTheme {
-        ConfirmPoopQualityScreenLayout(
+class ConfirmPoopQualityProvider : PreviewParameterProvider<ConfirmPoopQualityUiData> {
+    override val values: Sequence<ConfirmPoopQualityUiData> = sequenceOf(
+        ConfirmPoopQualityUiData(
             type = PoopType.TYPE_4,
             formattedDate = "23/04/26",
             formattedTime = "15.28 pm",
             showTimeDialog = false,
             showDateDialog = false,
-            onTimeUpdated = { _, _ -> },
-            onTypeClicked = {},
-            onSubmitClicked = {}
-        )
-    }
-}
-
-@PreviewLightDark
-@Composable
-private fun PreviewDateDialog() {
-    FibreTrackerTheme {
-        ConfirmPoopQualityScreenLayout(
-            type = PoopType.TYPE_4,
-            formattedDate = "23/04/26",
-            formattedTime = "15.28 pm",
-            showTimeDialog = false,
-            showDateDialog = true,
-            onTimeUpdated = { _, _ -> },
-            onTypeClicked = {},
-            onSubmitClicked = {}
-        )
-    }
-}
-
-@PreviewLightDark
-@Composable
-private fun PreviewTimeDialog() {
-    FibreTrackerTheme {
-        ConfirmPoopQualityScreenLayout(
+            hour = 15,
+            min = 28,
+            dateInMilliSec = 0L
+        ),
+        ConfirmPoopQualityUiData(
             type = PoopType.TYPE_4,
             formattedDate = "23/04/26",
             formattedTime = "15.28 pm",
             showTimeDialog = true,
             showDateDialog = false,
+            hour = 3,
+            min = 28,
+            dateInMilliSec = 0L
+        ),
+        ConfirmPoopQualityUiData(
+            type = PoopType.TYPE_4,
+            formattedDate = "23/04/26",
+            formattedTime = "15.28 pm",
+            showTimeDialog = false,
+            showDateDialog = true,
+            hour = 15,
+            min = 28,
+            dateInMilliSec = 0L
+        )
+    )
+
+}
+
+
+@PreviewLightDark
+@Composable
+private fun PreviewConfirmPoopQualityScreen(
+    @PreviewParameter(ConfirmPoopQualityProvider::class) uiData: ConfirmPoopQualityUiData
+) {
+    FibreTrackerTheme {
+        ConfirmPoopQualityScreenLayout(
+            uiData = uiData,
             onTimeUpdated = { _, _ -> },
             onTypeClicked = {},
-            onSubmitClicked = {}
+            onSubmitClicked = {},
+            onDateDialogDismissed = {},
+            onDateDialogOpened = {},
+            onTimeDialogDismissed = {},
+            onTimeDialogOpened = {},
+            onDateUpdated = {},
         )
     }
 }

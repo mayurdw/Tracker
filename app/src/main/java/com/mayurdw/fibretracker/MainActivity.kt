@@ -163,7 +163,9 @@ class MainActivity : ComponentActivity() {
                         composable<ConfirmPoopQuality> {
                             val type: ConfirmPoopQuality = it.toRoute()
 
-                            ConfirmPoopQualityScreen(type = type.quality)
+                            ConfirmPoopQualityScreen(type = type.quality) {
+                                navController.navigateUp()
+                            }
                         }
                     }
                 }
