@@ -34,6 +34,13 @@ import com.mayurdw.fibretracker.ui.screens.core.TimeDialog
 import com.mayurdw.fibretracker.ui.theme.FibreTrackerTheme
 import com.mayurdw.fibretracker.viewmodels.ConfirmPoopQualityUiData
 import com.mayurdw.fibretracker.viewmodels.ConfirmPoopQualityViewModel
+import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleDateDismissed
+import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleDateOpened
+import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleSubmission
+import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleTimeDismissed
+import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleTimeOpened
+import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleUpdatedDate
+import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleUpdatedTime
 import com.mayurdw.fibretracker.viewmodels.UIState
 
 @Composable
@@ -55,14 +62,21 @@ fun ConfirmPoopQualityScreen(
                 (uiState as UIState.Success<*>).data as ConfirmPoopQualityUiData
             ConfirmPoopQualityScreenLayout(
                 uiData = poopData,
-                onTimeUpdated = { _, _ -> },
+                onTimeUpdated = { hour, min ->
+                    viewModel.handleIntent(
+                        HandleUpdatedTime(
+                            hour,
+                            min
+                        )
+                    )
+                },
                 onTypeClicked = onTypeClicked,
-                onDateDialogDismissed = {},
-                onDateDialogOpened = {},
-                onTimeDialogDismissed = {},
-                onTimeDialogOpened = {},
-                onDateUpdated = {},
-                onSubmitClicked = {},
+                onDateDialogDismissed = { viewModel.handleIntent(HandleDateDismissed) },
+                onDateDialogOpened = { viewModel.handleIntent(HandleDateOpened) },
+                onTimeDialogDismissed = { viewModel.handleIntent(HandleTimeDismissed) },
+                onTimeDialogOpened = { viewModel.handleIntent(HandleTimeOpened) },
+                onDateUpdated = { viewModel.handleIntent(HandleUpdatedDate(it)) },
+                onSubmitClicked = { viewModel.handleIntent(HandleSubmission) },
             )
         }
 
