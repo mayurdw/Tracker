@@ -7,6 +7,7 @@ import androidx.room.Upsert
 import com.mayurdw.fibretracker.model.domain.EntryData
 import com.mayurdw.fibretracker.model.entity.FoodEntity
 import com.mayurdw.fibretracker.model.entity.FoodEntryEntity
+import com.mayurdw.fibretracker.model.entity.PoopEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDate
 
@@ -63,4 +64,8 @@ interface AppDao {
 
     @Delete
     suspend fun deleteFood(foodEntity: FoodEntity)
+
+
+    @Upsert
+    suspend fun upsertNewPoop(poopEntity: PoopEntity)
 }

@@ -1,11 +1,15 @@
 package com.mayurdw.fibretracker.viewmodels
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.mayurdw.fibretracker.data.usecase.IAddPoopEntryUseCase
 import com.mayurdw.fibretracker.model.domain.PoopType
+import com.mayurdw.fibretracker.model.entity.PoopEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
@@ -30,7 +34,9 @@ sealed interface ConfirmQualityIntents {
 }
 
 @HiltViewModel
-class ConfirmPoopQualityViewModel @Inject constructor() : ViewModel() {
+class ConfirmPoopQualityViewModel @Inject constructor(
+    private val addPoopEntryUseCase: IAddPoopEntryUseCase
+) : ViewModel() {
     val uiState: StateFlow<UIState<ConfirmPoopQualityUiData>>
         field = MutableStateFlow<UIState<ConfirmPoopQualityUiData>>(UIState.Loading)
     val submissionSuccessful: StateFlow<Boolean>
@@ -49,8 +55,17 @@ class ConfirmPoopQualityViewModel @Inject constructor() : ViewModel() {
             }
 
             ConfirmQualityIntents.HandleSubmission -> {
-                uiState.update { UIState.Loading }
-                submissionSuccessful.update { true }
+                viewModelScope.launch {
+                    uiState.value = UIState.Loading
+                    val entity = PoopEntity(
+                        quality = uiData.type.ordinal,
+                        time = LocalTime(uiData.hour, uiData.min),
+                        date = LocalDate.fromEpochDays(uiData.dateInMilliSec.milliseconds.inWholeDays)
+                    )
+
+                    addPoopEntryUseCase.addPoopEntry(entity)
+                    submissionSuccessful.value = true
+                }
             }
 
             ConfirmQualityIntents.HandleTimeDismissed -> {
