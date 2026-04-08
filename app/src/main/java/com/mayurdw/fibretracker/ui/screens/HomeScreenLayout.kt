@@ -77,10 +77,14 @@ fun HomeScreenLayout(
             onCardSelected(it)
         }
 
-        PoopItems(
-            modifier,
-            homeData.dateData.poopList
-        ) { }
+        if (homeData.dateData.poopList.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(16.dp))
+
+            PoopItems(
+                modifier,
+                homeData.dateData.poopList
+            ) { }
+        }
     }
 }
 
@@ -178,10 +182,15 @@ fun PoopItems(
                 Row(
                     modifier = modifier
                         .fillMaxWidth()
-                        .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 8.dp),
+                        .padding(all = 16.dp),
                     verticalAlignment = Alignment.Top,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
+                    Text(
+                        style = MaterialTheme.typography.bodyLarge,
+                        text = "Bowel movement"
+                    )
+
                     Text(
                         it.quality.title,
                         style = MaterialTheme.typography.bodyLarge,
@@ -279,7 +288,9 @@ internal class HomeScreenPreviewProvider : PreviewParameterProvider<HomeData> {
                         fibreThisMeal = "0.5"
                     )
                 ),
-                poopList = emptyList()
+                poopList = listOf(
+                    HomeData.PoopListItem(id = 1, quality = PoopType.TYPE_3)
+                )
             )
         ),
         HomeData(
