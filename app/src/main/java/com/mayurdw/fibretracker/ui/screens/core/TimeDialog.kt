@@ -51,9 +51,7 @@ fun TimeDialog(
             }
         },
         dismissButton = {
-            TextButton(onClick = {
-                onDismiss
-            }) {
+            TextButton(onClick = onDismiss) {
                 Text("Cancel")
             }
         }

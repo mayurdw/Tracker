@@ -34,8 +34,10 @@ import com.mayurdw.fibretracker.ui.screens.core.TimeDialog
 import com.mayurdw.fibretracker.ui.theme.FibreTrackerTheme
 import com.mayurdw.fibretracker.viewmodels.ConfirmPoopQualityUiData
 import com.mayurdw.fibretracker.viewmodels.ConfirmPoopQualityViewModel
+import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents
 import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleDateDismissed
 import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleDateOpened
+import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleNewType
 import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleSubmission
 import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleTimeDismissed
 import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleTimeOpened
@@ -47,12 +49,18 @@ import com.mayurdw.fibretracker.viewmodels.UIState
 fun ConfirmPoopQualityScreen(
     type: PoopType,
     viewModel: ConfirmPoopQualityViewModel = hiltViewModel(),
-    onTypeClicked: () -> Unit
+    onTypeClicked: () -> Unit,
+    onSaveSuccessful: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val saveSuccessful by viewModel.submissionSuccessful.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        viewModel.handlePoopType(type)
+        viewModel.handleIntent(HandleNewType(type))
+    }
+
+    if (saveSuccessful) {
+        onSaveSuccessful()
     }
 
     when (uiState) {
@@ -204,8 +212,8 @@ fun ConfirmPoopQualityScreenLayout(
 
     if (uiData.showTimeDialog) {
         TimeDialog(
-            hour = 12,
-            min = 23,
+            hour = uiData.hour,
+            min = uiData.min,
             onDismiss = onTimeDialogDismissed,
             onConfirmation = onTimeUpdated
         )
@@ -213,7 +221,7 @@ fun ConfirmPoopQualityScreenLayout(
 
     if (uiData.showDateDialog) {
         DateDialog(
-            dateInMilliSec = Calendar.getInstance().timeInMillis,
+            dateInMilliSec = uiData.dateInMilliSec,
             onDismiss = onDateDialogDismissed,
             onConfirmation = onDateUpdated
         )

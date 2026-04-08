@@ -6,14 +6,17 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.format
 import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
-import java.util.Calendar
 import javax.inject.Inject
 import kotlin.time.Clock
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.milliseconds
 
 sealed interface ConfirmQualityIntents {
     data class HandleNewType(val type: PoopType) : ConfirmQualityIntents
@@ -30,6 +33,9 @@ sealed interface ConfirmQualityIntents {
 class ConfirmPoopQualityViewModel @Inject constructor() : ViewModel() {
     val uiState: StateFlow<UIState<ConfirmPoopQualityUiData>>
         field = MutableStateFlow<UIState<ConfirmPoopQualityUiData>>(UIState.Loading)
+    val submissionSuccessful: StateFlow<Boolean>
+        field = MutableStateFlow<Boolean>(false)
+
     private lateinit var uiData: ConfirmPoopQualityUiData
 
     fun handleIntent(qualityIntents: ConfirmQualityIntents) {
@@ -44,7 +50,7 @@ class ConfirmPoopQualityViewModel @Inject constructor() : ViewModel() {
 
             ConfirmQualityIntents.HandleSubmission -> {
                 uiState.update { UIState.Loading }
-                return
+                submissionSuccessful.update { true }
             }
 
             ConfirmQualityIntents.HandleTimeDismissed -> {
@@ -58,15 +64,22 @@ class ConfirmPoopQualityViewModel @Inject constructor() : ViewModel() {
             }
 
             is ConfirmQualityIntents.HandleUpdatedDate -> {
-                uiData = uiData.copy(
-                    dateInMilliSec = qualityIntents.newTimeInMilliSec ?: uiData.dateInMilliSec,
-                    showDateDialog = false
-                )
+                qualityIntents.newTimeInMilliSec?.let {
+                    val date = LocalDate.fromEpochDays(it.milliseconds.inWholeDays)
+
+                    uiData = uiData.copy(
+                        dateInMilliSec = it,
+                        formattedDate = getFormattedDate(date),
+                        showDateDialog = false
+                    )
+                }
             }
 
             is ConfirmQualityIntents.HandleUpdatedTime -> {
+                val time = LocalTime(qualityIntents.hour, qualityIntents.min)
                 uiData = uiData.copy(
                     showTimeDialog = false,
+                    formattedTime = getFormattedTime(time),
                     hour = qualityIntents.hour,
                     min = qualityIntents.min
                 )
@@ -86,23 +99,43 @@ class ConfirmPoopQualityViewModel @Inject constructor() : ViewModel() {
         return Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
     }
 
-    private fun handlePoopType(type: PoopType) {
-        val instance = getCurrentTime()
-        val formatTime = LocalTime.Format {
-            instance.hour
+    private fun getFormattedTime(time: LocalTime): String {
+        val timeFormat = LocalTime.Format {
+            amPmHour()
             char(':')
-            instance.minute
+            minute()
+            char(' ')
+            amPmMarker("am", "pm")
         }
+
+        return time.format(timeFormat)
+    }
+
+    private fun getFormattedDate(date: LocalDate): String {
+        val dateFormat = LocalDate.Format {
+            day()
+            char('/')
+            monthNumber()
+            char('/')
+            yearTwoDigits(2000)
+        }
+
+        return date.format(dateFormat)
+    }
+
+    private fun handlePoopType(type: PoopType) {
+
+        val instance = getCurrentTime()
 
         uiData = ConfirmPoopQualityUiData(
             type = type,
-            formattedTime = "11.30 am",
-            formattedDate = "11/04/26",
+            formattedTime = getFormattedTime(instance.time),
+            formattedDate = getFormattedDate(instance.date),
             showTimeDialog = false,
-            hour = 11,
-            min = 30,
+            hour = instance.time.hour,
+            min = instance.time.minute,
             showDateDialog = false,
-            dateInMilliSec = Calendar.getInstance().timeInMillis
+            dateInMilliSec = instance.date.toEpochDays().days.inWholeMilliseconds
         )
     }
 }
