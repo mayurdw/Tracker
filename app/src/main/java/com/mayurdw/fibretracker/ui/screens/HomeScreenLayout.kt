@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.mayurdw.fibretracker.model.domain.HomeData
 import com.mayurdw.fibretracker.model.domain.HomeData.DateData
 import com.mayurdw.fibretracker.model.domain.HomeData.FoodListItem
+import com.mayurdw.fibretracker.model.domain.PoopType
 import com.mayurdw.fibretracker.ui.screens.core.FoodCardView
 import com.mayurdw.fibretracker.ui.theme.FibreTrackerTheme
 
@@ -75,6 +76,11 @@ fun HomeScreenLayout(
         ) {
             onCardSelected(it)
         }
+
+        PoopItems(
+            modifier,
+            homeData.dateData.poopList
+        ) { }
     }
 }
 
@@ -152,6 +158,39 @@ private fun DatePicker(
     }
 }
 
+
+@Composable
+fun PoopItems(
+    modifier: Modifier = Modifier,
+    poopItems: List<HomeData.PoopListItem>,
+    onCardSelected: (id: Int) -> Unit
+) {
+    LazyColumn(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(items = poopItems, key = { item: HomeData.PoopListItem -> item.id }) {
+            FoodCardView(
+                onCardSelect = { onCardSelected(it.id) }
+            ) {
+                Row(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 8.dp),
+                    verticalAlignment = Alignment.Top,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        it.quality.title,
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                }
+            }
+        }
+    }
+}
 
 @Composable
 fun FoodItems(
@@ -239,7 +278,8 @@ internal class HomeScreenPreviewProvider : PreviewParameterProvider<HomeData> {
                         foodName = "Chia",
                         fibreThisMeal = "0.5"
                     )
-                )
+                ),
+                poopList = emptyList()
             )
         ),
         HomeData(
@@ -247,7 +287,10 @@ internal class HomeScreenPreviewProvider : PreviewParameterProvider<HomeData> {
             dateData = DateData(
                 formattedDate = "30/5/25",
                 fibreOfTheDay = "0.0",
-                foodItems = emptyList()
+                foodItems = emptyList(),
+                poopList = listOf(
+                    HomeData.PoopListItem(id = 1, quality = PoopType.TYPE_4)
+                )
             )
         )
     )

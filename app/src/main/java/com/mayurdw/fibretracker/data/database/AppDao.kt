@@ -68,4 +68,7 @@ interface AppDao {
 
     @Upsert
     suspend fun upsertNewPoop(poopEntity: PoopEntity)
+
+    @Query("SELECT * from poop WHERE poop.date BETWEEN :startDate AND :endDate")
+    fun getPoopEntries(startDate: LocalDate, endDate: LocalDate): Flow<List<PoopEntity>>
 }

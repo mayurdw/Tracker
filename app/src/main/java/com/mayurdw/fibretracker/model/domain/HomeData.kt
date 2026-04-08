@@ -7,7 +7,13 @@ data class HomeData(
     data class DateData(
         val formattedDate: String,
         val foodItems: List<FoodListItem>,
+        val poopList: List<PoopListItem>,
         val fibreOfTheDay: String
+    )
+
+    data class PoopListItem(
+        val id: Int,
+        val quality: PoopType
     )
 
     data class FoodListItem(

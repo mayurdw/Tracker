@@ -5,15 +5,20 @@ package com.mayurdw.fibretracker.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mayurdw.fibretracker.data.helpers.convertFoodEntryEntityToFoodListItem
-import com.mayurdw.fibretracker.data.usecase.GetEntryUseCase
+import com.mayurdw.fibretracker.data.usecase.IGetEntryUseCase
+import com.mayurdw.fibretracker.data.usecase.IGetPoopEntryUseCase
+import com.mayurdw.fibretracker.model.domain.EntryData
 import com.mayurdw.fibretracker.model.domain.HomeData
 import com.mayurdw.fibretracker.model.domain.HomeData.DateData
+import com.mayurdw.fibretracker.model.domain.PoopType
+import com.mayurdw.fibretracker.model.entity.PoopEntity
 import com.mayurdw.fibretracker.viewmodels.UIState.Loading
 import com.mayurdw.fibretracker.viewmodels.UIState.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.datetime.DateTimeUnit.Companion.DAY
 import kotlinx.datetime.LocalDate
@@ -30,7 +35,8 @@ import kotlin.time.ExperimentalTime
 
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
-    private val getEntryUseCase: GetEntryUseCase
+    private val getEntryUseCase: IGetEntryUseCase,
+    private val getPoopEntryUseCase: IGetPoopEntryUseCase,
 ) : ViewModel() {
     val homeStateFlow: StateFlow<UIState<HomeData>>
         field = MutableStateFlow<UIState<HomeData>>(Loading)
@@ -41,8 +47,21 @@ class HomeScreenViewModel @Inject constructor(
     fun getLatestData() {
         viewModelScope.launch {
             homeStateFlow.emit(Loading)
-            with(getEntryUseCase) {
-                getCurrentDateEntryData(currentDate).collectLatest { current ->
+
+
+            combine(
+                getEntryUseCase.getCurrentDateEntryData(currentDate),
+                getPoopEntryUseCase.getPoopEntries(currentDate, currentDate)
+            ) { current: List<EntryData>, poopEntities: List<PoopEntity> ->
+                Pair(
+                    current,
+                    poopEntities
+                )
+            }
+                .collectLatest {
+                    val current = it.first
+                    val poopEntries = it.second
+
                     val foodList = current.map { entryData ->
                         convertFoodEntryEntityToFoodListItem(entryData)
                     }.sortedBy { listItem ->
@@ -67,13 +86,18 @@ class HomeScreenViewModel @Inject constructor(
                                 dateData = DateData(
                                     formattedDate = date,
                                     fibreOfTheDay = totalFibre.toString(),
-                                    foodItems = foodList
+                                    foodItems = foodList,
+                                    poopList = poopEntries.map { poopEntity ->
+                                        HomeData.PoopListItem(
+                                            id = poopEntity.id,
+                                            quality = PoopType.entries[poopEntity.quality]
+                                        )
+                                    }
                                 )
                             )
                         )
                     )
                 }
-            }
         }
     }
 
