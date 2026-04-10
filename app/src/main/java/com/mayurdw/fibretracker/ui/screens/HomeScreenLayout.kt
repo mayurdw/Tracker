@@ -45,7 +45,6 @@ fun HomeScreenLayout(
 ) {
     Column(
         modifier = modifier
-            .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface),
         verticalArrangement = Arrangement.Top
     ) {
@@ -70,6 +69,14 @@ fun HomeScreenLayout(
                 .height(48.dp)
         )
 
+        PoopItems(
+            modifier,
+            homeData.dateData.poopList
+        ) { }
+
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         FoodItems(
             modifier,
             homeData.dateData.foodItems
@@ -77,14 +84,6 @@ fun HomeScreenLayout(
             onCardSelected(it)
         }
 
-        if (homeData.dateData.poopList.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(16.dp))
-
-            PoopItems(
-                modifier,
-                homeData.dateData.poopList
-            ) { }
-        }
     }
 }
 

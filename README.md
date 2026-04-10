@@ -6,16 +6,18 @@ Made with Jetpack Compose & Love. No AI used.
 
 ## Release RoadMap
 
-### v0.8
+### v0.71
+
+#### Bugs:
+
+- [ ] Investigate Why Poop disappears
+
+### 0.8:
 
 #### Features:
 
 - [ ] Graph View of Fibre vs Poop Quality
 - [ ] Settings Screen
-
-#### Bugs:
-
-- [ ] Investigate Why Poop disappears
 
 ### v0.9:
 
