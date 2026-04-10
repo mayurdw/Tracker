@@ -17,8 +17,8 @@ android {
         applicationId = "com.mayurdw.fibretracker"
         minSdk = 29
         targetSdk = 36
-        versionCode = 7
-        versionName = "0.7"
+        versionCode = 8
+        versionName = "0.71"
 
         ksp {
             arg("room.schemaLocation", "$projectDir/schemas")
