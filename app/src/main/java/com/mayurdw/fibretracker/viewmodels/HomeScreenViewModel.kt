@@ -5,12 +5,17 @@ package com.mayurdw.fibretracker.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mayurdw.fibretracker.data.helpers.convertFoodEntryEntityToFoodListItem
-import com.mayurdw.fibretracker.data.usecase.IGetEntryUseCase
-import com.mayurdw.fibretracker.data.usecase.IGetPoopEntryUseCase
-import com.mayurdw.fibretracker.model.domain.EntryData
+import com.mayurdw.fibretracker.data.helpers.getDateToday
+import com.mayurdw.fibretracker.data.helpers.getFormattedDate
+import com.mayurdw.fibretracker.data.helpers.getFormattedTime
+import com.mayurdw.fibretracker.data.usecase.IGetBowelMovementEntryUseCase
+import com.mayurdw.fibretracker.data.usecase.IGetEntriesUseCase
+import com.mayurdw.fibretracker.model.domain.FoodEntryDatas
 import com.mayurdw.fibretracker.model.domain.HomeData
 import com.mayurdw.fibretracker.model.domain.HomeData.DateData
-import com.mayurdw.fibretracker.model.domain.PoopType
+import com.mayurdw.fibretracker.model.domain.ListItem
+import com.mayurdw.fibretracker.model.domain.ListItem.FoodListItem
+import com.mayurdw.fibretracker.model.domain.PoopType.entries
 import com.mayurdw.fibretracker.model.entity.PoopEntity
 import com.mayurdw.fibretracker.viewmodels.UIState.Loading
 import com.mayurdw.fibretracker.viewmodels.UIState.Success
@@ -22,37 +27,31 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.datetime.DateTimeUnit.Companion.DAY
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.format
-import kotlinx.datetime.format.char
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
-import kotlinx.datetime.todayIn
-import java.math.BigDecimal
+import java.math.BigDecimal.ZERO
 import javax.inject.Inject
-import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
-    private val getEntryUseCase: IGetEntryUseCase,
-    private val getPoopEntryUseCase: IGetPoopEntryUseCase,
+    private val getEntries: IGetEntriesUseCase,
+    private val getBowelMovements: IGetBowelMovementEntryUseCase,
 ) : ViewModel() {
     val homeStateFlow: StateFlow<UIState<HomeData>>
         field = MutableStateFlow<UIState<HomeData>>(Loading)
 
-    var currentDate = Clock.System.todayIn(TimeZone.currentSystemDefault())
+    var currentDate: LocalDate = getDateToday()
     val todaysDate = currentDate
 
     fun getLatestData() {
         viewModelScope.launch {
             homeStateFlow.emit(Loading)
 
-
             combine(
-                getEntryUseCase.getCurrentDateEntryData(currentDate),
-                getPoopEntryUseCase.getPoopEntries(currentDate, currentDate)
-            ) { current: List<EntryData>, poopEntities: List<PoopEntity> ->
+                getEntries(currentDate),
+                getBowelMovements(currentDate)
+            ) { current: List<FoodEntryDatas>, poopEntities: List<PoopEntity> ->
                 Pair(
                     current,
                     poopEntities
@@ -61,23 +60,34 @@ class HomeScreenViewModel @Inject constructor(
                 .collectLatest {
                     val current = it.first
                     val poopEntries = it.second
+                    var index = -1
 
-                    val foodList = current.map { entryData ->
-                        convertFoodEntryEntityToFoodListItem(entryData)
-                    }.sortedBy { listItem ->
-                        listItem.foodName
-                    }
+                    val foodList: List<FoodListItem> =
+                        current.map { entryData ->
+                            index += 1
+                            convertFoodEntryEntityToFoodListItem(entryData, index)
+                        }.sortedBy { listItem ->
+                            listItem.foodName
+                        }
 
-                    val dateFormat = LocalDate.Format {
-                        day()
-                        char('/')
-                        monthNumber()
-                        char('/')
-                        yearTwoDigits(2000)
+                    val date = currentDate.getFormattedDate()
+                    var totalFibre = ZERO
+                    current.forEach { food -> totalFibre += food.fibreConsumedInGms }
+
+
+                    val poopList = poopEntries.map { poopEntity ->
+                        index += 1
+                        ListItem.PoopListItem(
+                            itemId = index,
+                            id = poopEntity.id,
+                            quality = entries[poopEntity.quality],
+                            time = poopEntity.time.getFormattedTime()
+                        )
                     }
-                    val date = currentDate.format(dateFormat)
-                    var totalFibre = BigDecimal.ZERO
-                    current.forEach { totalFibre += it.fibreConsumedInGms }
+                    val listItems: List<ListItem> = buildList {
+                        addAll(foodList)
+                        addAll(poopList)
+                    }
 
                     homeStateFlow.emit(
                         Success(
@@ -86,13 +96,7 @@ class HomeScreenViewModel @Inject constructor(
                                 dateData = DateData(
                                     formattedDate = date,
                                     fibreOfTheDay = totalFibre.toString(),
-                                    foodItems = foodList,
-                                    poopList = poopEntries.map { poopEntity ->
-                                        HomeData.PoopListItem(
-                                            id = poopEntity.id,
-                                            quality = PoopType.entries[poopEntity.quality]
-                                        )
-                                    }
+                                    listItem = listItems
                                 )
                             )
                         )
@@ -103,14 +107,13 @@ class HomeScreenViewModel @Inject constructor(
 
     fun onDateChanged(isPrevious: Boolean) {
         viewModelScope.launch {
-            if (isPrevious) {
-                currentDate = currentDate.minus(1, DAY)
+            currentDate = if (isPrevious) {
+                currentDate.minus(1, DAY)
             } else {
-                currentDate = currentDate.plus(1, DAY)
+                currentDate.plus(1, DAY)
             }
 
             getLatestData()
         }
     }
-
 }

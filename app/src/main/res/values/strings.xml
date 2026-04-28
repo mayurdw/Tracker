@@ -17,4 +17,7 @@
     <string name="choose_entry">Choose Entry</string>
     <string name="poop_quality">Bowel Index</string>
     <string name="confirm_poop_quality">Confirm Details</string>
+    <string name="gm">gm</string>
+    <string name="var_gm">%1$s gm</string>
+    <string name="bowel_movement">Bowel Movement</string>
 </resources>

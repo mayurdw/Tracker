@@ -17,8 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FoodQuantityViewModel @Inject constructor(
-    private val getFoodUseCase: IGetFoodUseCase,
-    private val entryUseCase: IAddEntryUseCase
+    private val getFood: IGetFoodUseCase,
+    private val addEntry: IAddEntryUseCase
 ) : ViewModel() {
     val foodState: StateFlow<UIState<FoodEntity>>
         field = MutableStateFlow<UIState<FoodEntity>>(Loading)
@@ -29,7 +29,7 @@ class FoodQuantityViewModel @Inject constructor(
     fun loadFoodDetails(id: Int) {
         viewModelScope.launch {
             foodState.emit(Loading)
-            getFoodUseCase.getFoodById(id).collectLatest {
+            getFood(id).collectLatest {
                 if (it.isSuccess) {
                     foodState.emit(Success(it.getOrNull()!!))
                 } else {
@@ -47,9 +47,9 @@ class FoodQuantityViewModel @Inject constructor(
             if (foodEntity.singleServingSizeInGm != quantity) {
                 val entity = foodEntity.copy(singleServingSizeInGm = quantity)
                 entity.id = foodEntity.id
-                entryUseCase.insertNewEntry(entity)
+                addEntry(entity)
             } else {
-                entryUseCase.insertNewEntry(foodEntity)
+                addEntry(foodEntity)
             }
             entryState.emit(true)
         }

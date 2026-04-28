@@ -16,6 +16,10 @@ Made with Jetpack Compose & Love. No AI used.
 
 #### Features:
 
+- [ ] Cleanup of Code
+    - [x] UseCases Cleaned Up
+    - [ ] Update Any UseCases Tests
+    - [ ] ViewModel Cleanup
 - [ ] Graph View of Fibre vs Poop Quality
 - [ ] Settings Screen
 
@@ -29,6 +33,5 @@ Made with Jetpack Compose & Love. No AI used.
 - [ ] App Store Release**
 - [ ] UI Tests
 - [ ] Water Quantity Tracking
-- [ ] Cleanup of Code
 
 

@@ -6,20 +6,26 @@ data class HomeData(
 ) {
     data class DateData(
         val formattedDate: String,
-        val foodItems: List<FoodListItem>,
-        val poopList: List<PoopListItem>,
+        val listItem: List<ListItem>,
         val fibreOfTheDay: String
     )
+}
 
-    data class PoopListItem(
-        val id: Int,
-        val quality: PoopType
-    )
+sealed interface ListItem {
+    val itemId: Int
 
     data class FoodListItem(
         val id: Int,
         val foodName: String,
         val foodQuantity: String,
-        val fibreThisMeal: String
-    )
+        val fibreThisMeal: String,
+        override val itemId: Int
+    ) : ListItem
+
+    data class PoopListItem(
+        val id: Int,
+        val quality: PoopType,
+        val time: String,
+        override val itemId: Int,
+    ) : ListItem
 }

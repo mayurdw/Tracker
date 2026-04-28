@@ -6,12 +6,16 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+interface IAddFoodUseCase {
+    suspend operator fun invoke(newFoodItem: FoodEntity)
+}
+
 class AddFoodUseCase @Inject constructor(
     private val dao: AppDao,
     private val dispatcher: CoroutineDispatcher
 ) : IAddFoodUseCase {
 
-    override suspend fun upsertNewFood(newFoodItem: FoodEntity) {
+    override suspend operator fun invoke(newFoodItem: FoodEntity) {
         withContext(dispatcher) {
             dao.upsertNewFood(foodEntity = newFoodItem)
         }

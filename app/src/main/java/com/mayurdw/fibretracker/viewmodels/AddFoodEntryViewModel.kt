@@ -2,7 +2,7 @@ package com.mayurdw.fibretracker.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mayurdw.fibretracker.data.usecase.IGetFoodUseCase
+import com.mayurdw.fibretracker.data.usecase.IGetAllFoodsUseCase
 import com.mayurdw.fibretracker.model.entity.FoodEntity
 import com.mayurdw.fibretracker.viewmodels.UIState.Error
 import com.mayurdw.fibretracker.viewmodels.UIState.Loading
@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddFoodEntryViewModel @Inject constructor(
-    private val getFoodUseCase: IGetFoodUseCase
+    private val getFoods: IGetAllFoodsUseCase
 ) : ViewModel() {
     val entryState: StateFlow<UIState<List<FoodEntity>>>
         field = MutableStateFlow<UIState<List<FoodEntity>>>(Loading)
@@ -24,7 +24,7 @@ class AddFoodEntryViewModel @Inject constructor(
     fun loadData() {
         viewModelScope.launch {
             entryState.emit(Loading)
-            getFoodUseCase.getFoods().collectLatest {
+            getFoods().collectLatest {
                 if (it.isEmpty()) {
                     entryState.emit(Error)
                 } else {

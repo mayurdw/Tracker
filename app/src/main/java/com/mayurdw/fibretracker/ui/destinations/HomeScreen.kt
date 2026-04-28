@@ -22,7 +22,7 @@ fun HomeScreen(
     viewModel: HomeScreenViewModel = hiltViewModel<HomeScreenViewModel>(),
     onCardSelected: (id: Int) -> Unit
 ) {
-    val homeState by viewModel.homeStateFlow.collectAsStateWithLifecycle(minActiveState = Lifecycle.State.RESUMED)
+    val homeState by viewModel.homeStateFlow.collectAsStateWithLifecycle()
 
     LaunchedEffect(viewModel) {
         viewModel.getLatestData()
@@ -30,10 +30,10 @@ fun HomeScreen(
 
     when (homeState) {
         is Success<*> -> {
-            val homeData = homeState as Success<*>
+            val homeData = homeState as Success<HomeData>
             HomeScreenLayout(
                 modifier = modifier,
-                homeData = homeData.data as HomeData,
+                homeData = homeData.data,
                 onNextClicked = { viewModel.onDateChanged(false) },
                 onPreviousClicked = { viewModel.onDateChanged(true) }) {
                 onCardSelected(it)

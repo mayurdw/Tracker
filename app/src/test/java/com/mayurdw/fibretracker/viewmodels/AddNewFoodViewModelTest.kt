@@ -47,9 +47,9 @@ class AddNewFoodViewModelTest {
         MockKAnnotations.init(this, true)
 
         viewModel = AddNewFoodViewModel(
-            getFoodUseCase = getFoodUseCase,
-            addFoodUseCase = addFoodUseCase,
-            deleteFoodUseCase = deleteFoodUseCase
+            getFood = getFoodUseCase,
+            addFood = addFoodUseCase,
+            deleteFood = deleteFoodUseCase
         )
     }
 
@@ -172,7 +172,7 @@ class AddNewFoodViewModelTest {
         val flow = flow {
             emit(Result.failure<FoodEntity>(exception = Resources.NotFoundException()))
         }
-        coEvery { getFoodUseCase.getFoodById(ofType(Int::class)) } returns flow
+        coEvery { getFoodUseCase(ofType(Int::class)) } returns flow
 
 
         viewModel.uiState.test {
@@ -195,7 +195,7 @@ class AddNewFoodViewModelTest {
         val flow = flow {
             emit(Result.success(entity))
         }
-        coEvery { getFoodUseCase.getFoodById(ofType(Int::class)) } returns flow
+        coEvery { getFoodUseCase(ofType(Int::class)) } returns flow
 
         viewModel.uiState.test {
             viewModel.getFoodById(1)
@@ -215,7 +215,7 @@ class AddNewFoodViewModelTest {
             FoodEntity(name = "Test", fibrePerMicroGram = 1_000_000, singleServingSizeInGm = 100)
         val newFibre = 200
 
-        coEvery { addFoodUseCase.upsertNewFood(ofType(FoodEntity::class)) } returns Unit
+        coEvery { addFoodUseCase(ofType(FoodEntity::class)) } returns Unit
 
         assertTrue(
             viewModel.isUpdated(
@@ -234,7 +234,7 @@ class AddNewFoodViewModelTest {
         )
 
         coVerify {
-            addFoodUseCase.upsertNewFood(
+            addFoodUseCase(
                 FoodEntity(
                     name = entity.name,
                     singleServingSizeInGm = entity.singleServingSizeInGm,
@@ -250,7 +250,7 @@ class AddNewFoodViewModelTest {
             FoodEntity(name = "Test", fibrePerMicroGram = 1_950_000, singleServingSizeInGm = 100)
         val newFibre = 282
 
-        coEvery { addFoodUseCase.upsertNewFood(ofType(FoodEntity::class)) } returns Unit
+        coEvery { addFoodUseCase(ofType(FoodEntity::class)) } returns Unit
 
         assertTrue(
             viewModel.isUpdated(
@@ -269,7 +269,7 @@ class AddNewFoodViewModelTest {
         )
 
         coVerify {
-            addFoodUseCase.upsertNewFood(
+            addFoodUseCase(
                 FoodEntity(
                     name = entity.name,
                     singleServingSizeInGm = entity.singleServingSizeInGm,

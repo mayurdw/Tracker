@@ -50,7 +50,7 @@ fun EditFoodEntryScreen(
                 buttonEnabled = { viewModel.isEdited(it, entry) },
                 canDelete = true,
                 onDeleteClicked = {
-                    viewModel.deleteEntry(entry)
+                    viewModel.delete(entry)
                 }
             ) {
                 viewModel.updateEntry(it, entry)

@@ -22,9 +22,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddNewFoodViewModel @Inject constructor(
-    private val getFoodUseCase: IGetFoodUseCase,
-    private val addFoodUseCase: IAddFoodUseCase,
-    private val deleteFoodUseCase: IDeleteFoodUseCase
+    private val getFood: IGetFoodUseCase,
+    private val addFood: IAddFoodUseCase,
+    private val deleteFood: IDeleteFoodUseCase
 ) : ViewModel() {
     val uiState: StateFlow<UIState<FoodEntity>>
         field = MutableStateFlow<UIState<FoodEntity>>(Loading)
@@ -33,7 +33,7 @@ class AddNewFoodViewModel @Inject constructor(
         viewModelScope.launch {
 
             uiState.emit(Loading)
-            getFoodUseCase.getFoodById(foodId).collectLatest {
+            getFood(foodId).collectLatest {
                 if (it.isSuccess) {
                     uiState.emit(Success(it.getOrNull()!!))
                 } else {
@@ -77,7 +77,7 @@ class AddNewFoodViewModel @Inject constructor(
                     id = foodEntity.id
                 }
 
-                addFoodUseCase.upsertNewFood(newEntity)
+                addFood(newEntity)
             }
         }
     }
@@ -107,7 +107,7 @@ class AddNewFoodViewModel @Inject constructor(
                             fibrePerServingSizeInGms = fibrePerServingInGms
                         )
                     )
-                    addFoodUseCase.upsertNewFood(foodEntity)
+                    addFood(foodEntity)
                 } catch (_: Exception) {
 
                 }
@@ -115,9 +115,9 @@ class AddNewFoodViewModel @Inject constructor(
         }
     }
 
-    fun deleteFood(foodEntity: FoodEntity) {
+    fun delete(foodEntity: FoodEntity) {
         viewModelScope.launch {
-            deleteFoodUseCase.deleteFood(foodEntity)
+            deleteFood(foodEntity)
         }
     }
 }

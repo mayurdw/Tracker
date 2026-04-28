@@ -2,9 +2,9 @@ package com.mayurdw.fibretracker.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mayurdw.fibretracker.data.usecase.IAddEntryUseCase
 import com.mayurdw.fibretracker.data.usecase.IDeleteEntryUseCase
 import com.mayurdw.fibretracker.data.usecase.IGetEntryUseCase
+import com.mayurdw.fibretracker.data.usecase.IUpdateEntryUseCase
 import com.mayurdw.fibretracker.model.domain.EntryData
 import com.mayurdw.fibretracker.model.entity.FoodEntryEntity
 import com.mayurdw.fibretracker.viewmodels.UIState.Error
@@ -19,9 +19,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EditFoodEntryViewModel @Inject constructor(
-    private val entryUseCase: IGetEntryUseCase,
-    private val addEntryUseCase: IAddEntryUseCase,
-    private val deleteEntryUseCase: IDeleteEntryUseCase
+    private val getEntry: IGetEntryUseCase,
+    private val updateEntry: IUpdateEntryUseCase,
+    private val deleteEntry: IDeleteEntryUseCase
 ) : ViewModel() {
 
     val selectedEntryFlow: StateFlow<UIState<EntryData>>
@@ -32,7 +32,7 @@ class EditFoodEntryViewModel @Inject constructor(
 
     fun getEntryData(selectedEntryId: Int) {
         viewModelScope.launch {
-            val entry = entryUseCase.getEntry(selectedEntryId).firstOrNull()
+            val entry = getEntry(selectedEntryId).firstOrNull()
 
             entry?.let {
                 selectedEntryFlow.emit(Success(entry))
@@ -46,7 +46,7 @@ class EditFoodEntryViewModel @Inject constructor(
         if (newFoodQuantity.toInt() != entry.servingInGms) {
 
             viewModelScope.launch {
-                addEntryUseCase.insertNewEntry(
+                updateEntry(
                     FoodEntryEntity(
                         foodId = entry.foodId,
                         foodServingInGms = newFoodQuantity.toInt(),
@@ -67,9 +67,9 @@ class EditFoodEntryViewModel @Inject constructor(
         return entry.servingInGms != newValue.toInt()
     }
 
-    fun deleteEntry(entry: EntryData) {
+    fun delete(entry: EntryData) {
         viewModelScope.launch {
-            deleteEntryUseCase.deleteEntry(entry)
+            deleteEntry(entry)
             saveSuccessful.emit(true)
         }
     }

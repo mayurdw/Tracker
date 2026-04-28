@@ -42,7 +42,7 @@ fun AddNewFoodScreen(
 
                     },
                     onDelete = {
-                        viewModel.deleteFood(data)
+                        viewModel.delete(data)
                         onActionCompleted()
                     }
                 ) { foodName: String, foodServing: String, fibrePerServing: String ->

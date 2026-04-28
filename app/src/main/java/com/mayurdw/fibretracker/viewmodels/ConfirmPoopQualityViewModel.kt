@@ -2,7 +2,10 @@ package com.mayurdw.fibretracker.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mayurdw.fibretracker.data.usecase.IAddPoopEntryUseCase
+import com.mayurdw.fibretracker.data.helpers.getDateTimeNow
+import com.mayurdw.fibretracker.data.helpers.getFormattedDate
+import com.mayurdw.fibretracker.data.helpers.getFormattedTime
+import com.mayurdw.fibretracker.data.usecase.IAddBowelMovementEntryUseCase
 import com.mayurdw.fibretracker.model.domain.PoopType
 import com.mayurdw.fibretracker.model.entity.PoopEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,14 +14,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.format
-import kotlinx.datetime.format.char
-import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
-import kotlin.time.Clock
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -35,7 +32,7 @@ sealed interface ConfirmQualityIntents {
 
 @HiltViewModel
 class ConfirmPoopQualityViewModel @Inject constructor(
-    private val addPoopEntryUseCase: IAddPoopEntryUseCase
+    private val addPoop: IAddBowelMovementEntryUseCase
 ) : ViewModel() {
     val uiState: StateFlow<UIState<ConfirmPoopQualityUiData>>
         field = MutableStateFlow<UIState<ConfirmPoopQualityUiData>>(UIState.Loading)
@@ -63,7 +60,7 @@ class ConfirmPoopQualityViewModel @Inject constructor(
                         date = LocalDate.fromEpochDays(uiData.dateInMilliSec.milliseconds.inWholeDays)
                     )
 
-                    addPoopEntryUseCase.addPoopEntry(entity)
+                    addPoop(entity)
                     submissionSuccessful.value = true
                 }
             }
@@ -84,7 +81,7 @@ class ConfirmPoopQualityViewModel @Inject constructor(
 
                     uiData = uiData.copy(
                         dateInMilliSec = it,
-                        formattedDate = getFormattedDate(date),
+                        formattedDate = date.getFormattedDate(),
                         showDateDialog = false
                     )
                 }
@@ -94,7 +91,7 @@ class ConfirmPoopQualityViewModel @Inject constructor(
                 val time = LocalTime(qualityIntents.hour, qualityIntents.min)
                 uiData = uiData.copy(
                     showTimeDialog = false,
-                    formattedTime = getFormattedTime(time),
+                    formattedTime = time.getFormattedTime(),
                     hour = qualityIntents.hour,
                     min = qualityIntents.min
                 )
@@ -110,42 +107,14 @@ class ConfirmPoopQualityViewModel @Inject constructor(
         }
     }
 
-    private fun getCurrentTime(): LocalDateTime {
-        return Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-    }
-
-    private fun getFormattedTime(time: LocalTime): String {
-        val timeFormat = LocalTime.Format {
-            amPmHour()
-            char(':')
-            minute()
-            char(' ')
-            amPmMarker("am", "pm")
-        }
-
-        return time.format(timeFormat)
-    }
-
-    private fun getFormattedDate(date: LocalDate): String {
-        val dateFormat = LocalDate.Format {
-            day()
-            char('/')
-            monthNumber()
-            char('/')
-            yearTwoDigits(2000)
-        }
-
-        return date.format(dateFormat)
-    }
-
     private fun handlePoopType(type: PoopType) {
 
-        val instance = getCurrentTime()
+        val instance = getDateTimeNow()
 
         uiData = ConfirmPoopQualityUiData(
             type = type,
-            formattedTime = getFormattedTime(instance.time),
-            formattedDate = getFormattedDate(instance.date),
+            formattedTime = instance.time.getFormattedTime(),
+            formattedDate = instance.date.getFormattedDate(),
             showTimeDialog = false,
             hour = instance.time.hour,
             min = instance.time.minute,

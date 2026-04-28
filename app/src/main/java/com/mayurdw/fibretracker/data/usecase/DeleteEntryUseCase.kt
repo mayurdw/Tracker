@@ -7,11 +7,15 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+interface IDeleteEntryUseCase {
+    suspend operator fun invoke(entity: EntryData)
+}
+
 class DeleteEntryUseCase @Inject constructor(
     private val appDao: AppDao,
     private val dispatcher: CoroutineDispatcher
 ) : IDeleteEntryUseCase {
-    override suspend fun deleteEntry(entity: EntryData) {
+    override suspend operator fun invoke(entity: EntryData) {
         withContext(dispatcher) {
             appDao.deleteEntry(
                 foodEntryEntity = FoodEntryEntity(

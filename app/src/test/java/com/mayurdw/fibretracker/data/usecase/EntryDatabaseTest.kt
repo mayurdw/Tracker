@@ -7,6 +7,7 @@ import app.cash.turbine.test
 import com.mayurdw.fibretracker.TestDispatcherRule
 import com.mayurdw.fibretracker.data.database.AppDao
 import com.mayurdw.fibretracker.data.database.AppDatabase
+import com.mayurdw.fibretracker.data.helpers.getDateToday
 import com.mayurdw.fibretracker.model.entity.FoodEntity
 import com.mayurdw.fibretracker.model.entity.FoodEntryEntity
 import io.mockk.mockk
@@ -309,5 +310,5 @@ class EntryDatabaseTest {
         }
     }
 
-    fun getCurrentDate() = Clock.System.todayIn(TimeZone.currentSystemDefault())
+    fun getCurrentDate() : LocalDate = getDateToday()
 }

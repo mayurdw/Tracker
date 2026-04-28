@@ -15,8 +15,19 @@ data class FoodEntryData(
         get() = BigDecimal.valueOf(servingInGms * fibrePerMicroGrams / 1_000_000.00)
 }
 
+data class FoodEntryDatas(
+    val id: Int,
+    val foodId: Int,
+    val name: String,
+    val servingInGms: Int,
+    val fibrePerMicroGrams: Int
+) {
+    val fibreConsumedInGms: BigDecimal
+        get() = BigDecimal.valueOf(servingInGms * fibrePerMicroGrams / 1_000_000.00)
+}
+
 sealed interface EntryType {
-    data class Food(val food: FoodEntryData) : EntryType
+    data class Food(val food: FoodEntryDatas) : EntryType
     data class Poop(val poopEntity: PoopEntity) : EntryType
 }
 
