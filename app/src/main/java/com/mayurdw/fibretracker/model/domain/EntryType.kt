@@ -4,7 +4,6 @@ import java.math.BigDecimal
 
 sealed interface EntryType {
     data class Food(
-        val foodId: Int,
         val name: String,
         val servingInGms: Int,
         val fibrePerMicroGrams: Int

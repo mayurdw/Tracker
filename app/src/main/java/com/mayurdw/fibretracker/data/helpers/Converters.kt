@@ -1,10 +1,17 @@
 package com.mayurdw.fibretracker.data.helpers
 
+import com.mayurdw.fibretracker.model.domain.Entry
+import com.mayurdw.fibretracker.model.domain.EntryType.Food
+import com.mayurdw.fibretracker.model.domain.EntryType.Poop
 import com.mayurdw.fibretracker.model.domain.FoodEntryData
 import com.mayurdw.fibretracker.model.domain.ListItem
+import com.mayurdw.fibretracker.model.domain.PoopType
+import com.mayurdw.fibretracker.model.entity.EntityType.BOWEL_MOVEMENT
+import com.mayurdw.fibretracker.model.entity.EntryEntity
 import com.mayurdw.fibretracker.model.entity.FoodEntity
 import com.mayurdw.fibretracker.model.entity.FoodEntryEntity
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalTime
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -29,5 +36,47 @@ fun convertFoodEntryEntityToFoodListItem(
             "${entryData.servingInGms}",
         fibreThisMeal = entryData.fibreConsumedInGms.toString(),
         itemId = index
+    )
+}
+
+fun convertBowelMovementIntoEntity(
+    type: PoopType,
+    date: LocalDate,
+    time: LocalTime
+): EntryEntity {
+    return EntryEntity(
+        date = date,
+        time = time,
+        type = BOWEL_MOVEMENT,
+        quality = type
+    )
+}
+
+fun convertFoodEntryEntityIntoEntry(
+    foodEntry: EntryEntity,
+    foodEntity: FoodEntity
+): Entry {
+    return Entry(
+        id = foodEntry.id,
+        time = foodEntry.time,
+        date = foodEntry.date,
+        info = Food(
+            name = foodEntity.name,
+            servingInGms = foodEntry.foodServingInGms!!,
+            fibrePerMicroGrams = foodEntity.fibrePerMicroGram
+        )
+    )
+}
+
+fun convertBowelEntryEntityIntoEntry(
+    bowelEntity: EntryEntity
+): Entry {
+    return Entry(
+        id = bowelEntity.id,
+        time = bowelEntity.time,
+        date = bowelEntity.date,
+        info = Poop(
+            quality = bowelEntity.quality!!
+        )
     )
 }
