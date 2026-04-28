@@ -5,7 +5,7 @@ import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
 import com.mayurdw.fibretracker.model.domain.EntryData
-import com.mayurdw.fibretracker.model.domain.FoodEntryDatas
+import com.mayurdw.fibretracker.model.domain.FoodEntryData
 import com.mayurdw.fibretracker.model.entity.FoodEntity
 import com.mayurdw.fibretracker.model.entity.FoodEntryEntity
 import com.mayurdw.fibretracker.model.entity.PoopEntity
@@ -30,7 +30,7 @@ interface AppDao {
                 "AND entry.date BETWEEN :startTime AND :endTime " +
                 "ORDER BY date DESC"
     )
-    fun getEntryData(startTime: LocalDate, endTime: LocalDate): Flow<List<FoodEntryDatas>>
+    fun getEntryData(startTime: LocalDate, endTime: LocalDate): Flow<List<FoodEntryData>>
 
     @Query(
         "SELECT entry.date AS date, " +

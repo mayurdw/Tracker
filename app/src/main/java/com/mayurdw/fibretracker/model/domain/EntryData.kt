@@ -1,21 +1,10 @@
 package com.mayurdw.fibretracker.model.domain
 
-import com.mayurdw.fibretracker.model.entity.PoopEntity
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.LocalTime
 import java.math.BigDecimal
+import java.math.BigDecimal.valueOf
 
 data class FoodEntryData(
-    val foodId: Int,
-    val name: String,
-    val servingInGms: Int,
-    val fibrePerMicroGrams: Int
-) {
-    val fibreConsumedInGms: BigDecimal
-        get() = BigDecimal.valueOf(servingInGms * fibrePerMicroGrams / 1_000_000.00)
-}
-
-data class FoodEntryDatas(
     val id: Int,
     val foodId: Int,
     val name: String,
@@ -23,20 +12,8 @@ data class FoodEntryDatas(
     val fibrePerMicroGrams: Int
 ) {
     val fibreConsumedInGms: BigDecimal
-        get() = BigDecimal.valueOf(servingInGms * fibrePerMicroGrams / 1_000_000.00)
+        get() = valueOf(servingInGms * fibrePerMicroGrams / 1_000_000.00)
 }
-
-sealed interface EntryType {
-    data class Food(val food: FoodEntryDatas) : EntryType
-    data class Poop(val poopEntity: PoopEntity) : EntryType
-}
-
-data class Entry(
-    val id: Int,
-    val time: LocalTime,
-    val date: LocalDate,
-    val info: EntryType
-)
 
 data class EntryData(
     val id: Int,
@@ -47,5 +24,5 @@ data class EntryData(
     val fibrePerMicroGrams: Int
 ) {
     val fibreConsumedInGms: BigDecimal
-        get() = BigDecimal.valueOf(servingInGms * fibrePerMicroGrams / 1_000_000.00)
+        get() = valueOf(servingInGms * fibrePerMicroGrams / 1_000_000.00)
 }

@@ -17,7 +17,10 @@ import com.mayurdw.fibretracker.model.entity.PoopEntity
         AutoMigration(from = 1, to = 2)
     ]
 )
-@TypeConverters(LocalDateConverters::class, LocalTimeConverters::class)
+@TypeConverters(
+    LocalDateConverters::class,
+    LocalTimeConverters::class
+)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun getAppDao(): AppDao
 

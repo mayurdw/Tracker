@@ -10,7 +10,7 @@ import com.mayurdw.fibretracker.data.helpers.getFormattedDate
 import com.mayurdw.fibretracker.data.helpers.getFormattedTime
 import com.mayurdw.fibretracker.data.usecase.IGetBowelMovementEntryUseCase
 import com.mayurdw.fibretracker.data.usecase.IGetEntriesUseCase
-import com.mayurdw.fibretracker.model.domain.FoodEntryDatas
+import com.mayurdw.fibretracker.model.domain.FoodEntryData
 import com.mayurdw.fibretracker.model.domain.HomeData
 import com.mayurdw.fibretracker.model.domain.HomeData.DateData
 import com.mayurdw.fibretracker.model.domain.ListItem
@@ -51,7 +51,7 @@ class HomeScreenViewModel @Inject constructor(
             combine(
                 getEntries(currentDate),
                 getBowelMovements(currentDate)
-            ) { current: List<FoodEntryDatas>, poopEntities: List<PoopEntity> ->
+            ) { current: List<FoodEntryData>, poopEntities: List<PoopEntity> ->
                 Pair(
                     current,
                     poopEntities

@@ -1,18 +1,15 @@
 package com.mayurdw.fibretracker.data.helpers
 
-import com.mayurdw.fibretracker.model.domain.FoodEntryDatas
+import com.mayurdw.fibretracker.model.domain.FoodEntryData
 import com.mayurdw.fibretracker.model.domain.ListItem
 import com.mayurdw.fibretracker.model.entity.FoodEntity
 import com.mayurdw.fibretracker.model.entity.FoodEntryEntity
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.todayIn
-import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 fun convertFoodEntityToEntryEntity(foodEntity: FoodEntity): FoodEntryEntity {
-    val date : LocalDate = getDateToday()
+    val date: LocalDate = getDateToday()
 
     return FoodEntryEntity(
         foodId = foodEntity.id,
@@ -22,7 +19,7 @@ fun convertFoodEntityToEntryEntity(foodEntity: FoodEntity): FoodEntryEntity {
 }
 
 fun convertFoodEntryEntityToFoodListItem(
-    entryData: FoodEntryDatas,
+    entryData: FoodEntryData,
     index: Int
 ): ListItem.FoodListItem {
     return ListItem.FoodListItem(
