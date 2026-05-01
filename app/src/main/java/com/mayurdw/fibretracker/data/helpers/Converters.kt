@@ -12,9 +12,7 @@ import com.mayurdw.fibretracker.model.entity.FoodEntity
 import com.mayurdw.fibretracker.model.entity.FoodEntryEntity
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 fun convertFoodEntityToEntryEntity(foodEntity: FoodEntity): FoodEntryEntity {
     val date: LocalDate = getDateToday()
 
