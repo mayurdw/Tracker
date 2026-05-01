@@ -11,14 +11,14 @@ import kotlinx.datetime.LocalDate
 import javax.inject.Inject
 
 
-interface IGetEntriesUseCase {
+interface IGetFoodEntriesUseCase {
     suspend operator fun invoke(currentDate: LocalDate): Flow<List<FoodEntryData>>
 }
 
-class GetEntriesUseCase @Inject constructor(
+class GetFoodEntriesUseCase @Inject constructor(
     private val entryDao: AppDao,
     private val dispatcher: CoroutineDispatcher
-) : IGetEntriesUseCase {
+) : IGetFoodEntriesUseCase {
     override suspend operator fun invoke(currentDate: LocalDate): Flow<List<FoodEntryData>> =
         channelFlow {
             withContext(dispatcher) {

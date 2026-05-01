@@ -9,7 +9,7 @@ import com.mayurdw.fibretracker.data.helpers.getDateToday
 import com.mayurdw.fibretracker.data.helpers.getFormattedDate
 import com.mayurdw.fibretracker.data.helpers.getFormattedTime
 import com.mayurdw.fibretracker.data.usecase.IGetBowelMovementEntryUseCase
-import com.mayurdw.fibretracker.data.usecase.IGetEntriesUseCase
+import com.mayurdw.fibretracker.data.usecase.IGetFoodEntriesUseCase
 import com.mayurdw.fibretracker.model.domain.FoodEntryData
 import com.mayurdw.fibretracker.model.domain.HomeData
 import com.mayurdw.fibretracker.model.domain.HomeData.DateData
@@ -35,7 +35,7 @@ import kotlin.time.ExperimentalTime
 
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
-    private val getEntries: IGetEntriesUseCase,
+    private val getEntries: IGetFoodEntriesUseCase,
     private val getBowelMovements: IGetBowelMovementEntryUseCase,
 ) : ViewModel() {
     val homeStateFlow: StateFlow<UIState<HomeData>>

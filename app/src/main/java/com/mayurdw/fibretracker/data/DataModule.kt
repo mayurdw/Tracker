@@ -11,8 +11,8 @@ import com.mayurdw.fibretracker.data.usecase.DeleteEntryUseCase
 import com.mayurdw.fibretracker.data.usecase.DeleteFoodUseCase
 import com.mayurdw.fibretracker.data.usecase.GetAllFoodsUseCase
 import com.mayurdw.fibretracker.data.usecase.GetBowelMovementEntryUseCase
-import com.mayurdw.fibretracker.data.usecase.GetEntriesUseCase
 import com.mayurdw.fibretracker.data.usecase.GetEntryUseCase
+import com.mayurdw.fibretracker.data.usecase.GetFoodEntriesUseCase
 import com.mayurdw.fibretracker.data.usecase.GetFoodUseCase
 import com.mayurdw.fibretracker.data.usecase.IAddBowelMovementEntryUseCase
 import com.mayurdw.fibretracker.data.usecase.IAddEntryUseCase
@@ -21,8 +21,8 @@ import com.mayurdw.fibretracker.data.usecase.IDeleteEntryUseCase
 import com.mayurdw.fibretracker.data.usecase.IDeleteFoodUseCase
 import com.mayurdw.fibretracker.data.usecase.IGetAllFoodsUseCase
 import com.mayurdw.fibretracker.data.usecase.IGetBowelMovementEntryUseCase
-import com.mayurdw.fibretracker.data.usecase.IGetEntriesUseCase
 import com.mayurdw.fibretracker.data.usecase.IGetEntryUseCase
+import com.mayurdw.fibretracker.data.usecase.IGetFoodEntriesUseCase
 import com.mayurdw.fibretracker.data.usecase.IGetFoodUseCase
 import com.mayurdw.fibretracker.data.usecase.IUpdateEntryUseCase
 import com.mayurdw.fibretracker.data.usecase.UpdateEntryUseCase
@@ -77,7 +77,7 @@ abstract class UseCaseModule {
     abstract fun provideUpdateEntryUseCase(updateEntryUseCase: UpdateEntryUseCase): IUpdateEntryUseCase
 
     @Binds
-    abstract fun provideGetEntriesUseCase(getEntriesUseCase: GetEntriesUseCase): IGetEntriesUseCase
+    abstract fun provideGetEntriesUseCase(getEntriesUseCase: GetFoodEntriesUseCase): IGetFoodEntriesUseCase
 
     @Binds
     abstract fun provideGetEntryUseCase(getEntryUseCase: GetEntryUseCase): IGetEntryUseCase
