@@ -81,4 +81,8 @@ interface AppDao {
                 "ORDER BY DATE desc"
     )
     fun getEntries(startDate: LocalDate, endDate: LocalDate): Flow<List<EntryEntity>>
+
+    @Upsert
+    suspend fun insertEntry(entryEntity: EntryEntity)
+
 }

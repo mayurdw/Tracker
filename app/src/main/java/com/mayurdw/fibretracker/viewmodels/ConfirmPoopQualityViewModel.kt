@@ -6,7 +6,7 @@ import com.mayurdw.fibretracker.data.helpers.getDateTimeNow
 import com.mayurdw.fibretracker.data.helpers.getFormattedDate
 import com.mayurdw.fibretracker.data.helpers.getFormattedTime
 import com.mayurdw.fibretracker.data.usecase.IAddBowelMovementEntryUseCase
-import com.mayurdw.fibretracker.model.domain.PoopType
+import com.mayurdw.fibretracker.model.domain.BowelQuality
 import com.mayurdw.fibretracker.model.entity.PoopEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +20,7 @@ import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
 
 sealed interface ConfirmQualityIntents {
-    data class HandleNewType(val type: PoopType) : ConfirmQualityIntents
+    data class HandleNewType(val type: BowelQuality) : ConfirmQualityIntents
     data class HandleUpdatedTime(val hour: Int, val min: Int) : ConfirmQualityIntents
     data class HandleUpdatedDate(val newTimeInMilliSec: Long?) : ConfirmQualityIntents
     data object HandleDateDismissed : ConfirmQualityIntents
@@ -107,7 +107,7 @@ class ConfirmPoopQualityViewModel @Inject constructor(
         }
     }
 
-    private fun handlePoopType(type: PoopType) {
+    private fun handlePoopType(type: BowelQuality) {
 
         val instance = getDateTimeNow()
 
@@ -125,7 +125,7 @@ class ConfirmPoopQualityViewModel @Inject constructor(
 }
 
 data class ConfirmPoopQualityUiData(
-    val type: PoopType,
+    val type: BowelQuality,
     val formattedDate: String,
     val formattedTime: String,
     val showTimeDialog: Boolean,

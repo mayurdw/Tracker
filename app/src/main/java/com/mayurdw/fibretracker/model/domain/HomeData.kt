@@ -24,7 +24,7 @@ sealed interface ListItem {
 
     data class PoopListItem(
         val id: Int,
-        val quality: PoopType,
+        val quality: BowelQuality,
         val time: String,
         override val itemId: Int,
     ) : ListItem

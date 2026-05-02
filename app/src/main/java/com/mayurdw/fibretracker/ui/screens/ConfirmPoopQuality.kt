@@ -1,6 +1,5 @@
 package com.mayurdw.fibretracker.ui.screens
 
-import android.icu.util.Calendar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,14 +26,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mayurdw.fibretracker.R
-import com.mayurdw.fibretracker.model.domain.PoopType
+import com.mayurdw.fibretracker.model.domain.BowelQuality
 import com.mayurdw.fibretracker.ui.screens.core.DateDialog
 import com.mayurdw.fibretracker.ui.screens.core.LoadingScreen
 import com.mayurdw.fibretracker.ui.screens.core.TimeDialog
 import com.mayurdw.fibretracker.ui.theme.FibreTrackerTheme
 import com.mayurdw.fibretracker.viewmodels.ConfirmPoopQualityUiData
 import com.mayurdw.fibretracker.viewmodels.ConfirmPoopQualityViewModel
-import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents
 import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleDateDismissed
 import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleDateOpened
 import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleNewType
@@ -47,7 +45,7 @@ import com.mayurdw.fibretracker.viewmodels.UIState
 
 @Composable
 fun ConfirmPoopQualityScreen(
-    type: PoopType,
+    type: BowelQuality,
     viewModel: ConfirmPoopQualityViewModel = hiltViewModel(),
     onTypeClicked: () -> Unit,
     onSaveSuccessful: () -> Unit,
@@ -233,7 +231,7 @@ fun ConfirmPoopQualityScreenLayout(
 class ConfirmPoopQualityProvider : PreviewParameterProvider<ConfirmPoopQualityUiData> {
     override val values: Sequence<ConfirmPoopQualityUiData> = sequenceOf(
         ConfirmPoopQualityUiData(
-            type = PoopType.TYPE_4,
+            type = BowelQuality.TYPE_4,
             formattedDate = "23/04/26",
             formattedTime = "15.28 pm",
             showTimeDialog = false,
@@ -243,7 +241,7 @@ class ConfirmPoopQualityProvider : PreviewParameterProvider<ConfirmPoopQualityUi
             dateInMilliSec = 0L
         ),
         ConfirmPoopQualityUiData(
-            type = PoopType.TYPE_4,
+            type = BowelQuality.TYPE_4,
             formattedDate = "23/04/26",
             formattedTime = "15.28 pm",
             showTimeDialog = true,
@@ -253,7 +251,7 @@ class ConfirmPoopQualityProvider : PreviewParameterProvider<ConfirmPoopQualityUi
             dateInMilliSec = 0L
         ),
         ConfirmPoopQualityUiData(
-            type = PoopType.TYPE_4,
+            type = BowelQuality.TYPE_4,
             formattedDate = "23/04/26",
             formattedTime = "15.28 pm",
             showTimeDialog = false,

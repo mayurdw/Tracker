@@ -10,12 +10,12 @@ import com.mayurdw.fibretracker.data.helpers.getFormattedDate
 import com.mayurdw.fibretracker.data.helpers.getFormattedTime
 import com.mayurdw.fibretracker.data.usecase.IGetBowelMovementEntryUseCase
 import com.mayurdw.fibretracker.data.usecase.IGetFoodEntriesUseCase
+import com.mayurdw.fibretracker.model.domain.BowelQuality.entries
 import com.mayurdw.fibretracker.model.domain.FoodEntryData
 import com.mayurdw.fibretracker.model.domain.HomeData
 import com.mayurdw.fibretracker.model.domain.HomeData.DateData
 import com.mayurdw.fibretracker.model.domain.ListItem
 import com.mayurdw.fibretracker.model.domain.ListItem.FoodListItem
-import com.mayurdw.fibretracker.model.domain.PoopType.entries
 import com.mayurdw.fibretracker.model.entity.PoopEntity
 import com.mayurdw.fibretracker.viewmodels.UIState.Loading
 import com.mayurdw.fibretracker.viewmodels.UIState.Success

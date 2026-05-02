@@ -7,7 +7,10 @@ import app.cash.turbine.test
 import com.mayurdw.fibretracker.TestDispatcherRule
 import com.mayurdw.fibretracker.data.database.AppDao
 import com.mayurdw.fibretracker.data.database.AppDatabase
+import com.mayurdw.fibretracker.data.helpers.getCurrentTime
 import com.mayurdw.fibretracker.data.helpers.getDateToday
+import com.mayurdw.fibretracker.model.entity.EntityType
+import com.mayurdw.fibretracker.model.entity.EntryEntity
 import com.mayurdw.fibretracker.model.entity.FoodEntity
 import com.mayurdw.fibretracker.model.entity.FoodEntryEntity
 import io.mockk.mockk
@@ -15,11 +18,9 @@ import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNull
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.test.runTest
-import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.DateTimeUnit.Companion.DAY
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
-import kotlinx.datetime.todayIn
 import org.junit.After
 import org.junit.Assert.assertNotEquals
 import org.junit.Before
@@ -27,12 +28,11 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 @RunWith(RobolectricTestRunner::class)
-class EntryDatabaseTest {
+class AppDatabaseTest {
 
     @get:Rule
     val dispatcherRule = TestDispatcherRule()
@@ -102,7 +102,7 @@ class EntryDatabaseTest {
             FoodEntryEntity(
                 foodId = food.id,
                 foodServingInGms = food.singleServingSizeInGm * 2,
-                date = currentDate.minus(1, DateTimeUnit.DAY)
+                date = currentDate.minus(1, DAY)
             )
         )
 
@@ -310,5 +310,42 @@ class EntryDatabaseTest {
         }
     }
 
-    fun getCurrentDate() : LocalDate = getDateToday()
+    @Test
+    fun getEntriesWhenNoneExist() = runTest {
+        dao.getEntries(getCurrentDate(), getCurrentDate()).test {
+            assertTrue(awaitItem().isEmpty())
+        }
+    }
+
+    @Test
+    fun getEntriesWhenEntriesOlder() = runTest {
+        val entry = EntryEntity(
+            date = getCurrentDate().minus(1, DAY),
+            time = getCurrentTime(),
+            type = EntityType.BOWEL_MOVEMENT
+        )
+
+        dao.insertEntry(entry)
+
+        dao.getEntries(getCurrentDate(), getCurrentDate()).test {
+            assertTrue(awaitItem().isEmpty())
+        }
+    }
+
+    @Test
+    fun getEntriesTest() = runTest {
+        val entry = EntryEntity(
+            date = getCurrentDate(),
+            time = getCurrentTime(),
+            type = EntityType.FOOD
+        )
+
+        dao.insertEntry(entry)
+
+        dao.getEntries(getCurrentDate(), getCurrentDate()).test {
+            assertEquals(1, awaitItem().size)
+        }
+    }
+
+    fun getCurrentDate(): LocalDate = getDateToday()
 }

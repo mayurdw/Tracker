@@ -2,7 +2,7 @@ package com.mayurdw.fibretracker.ui.destinations
 
 import androidx.annotation.StringRes
 import com.mayurdw.fibretracker.R
-import com.mayurdw.fibretracker.model.domain.PoopType
+import com.mayurdw.fibretracker.model.domain.BowelQuality
 import kotlinx.serialization.Serializable
 
 sealed interface Destinations {
@@ -83,7 +83,7 @@ object PoopQuality : Destinations
 
 @Serializable
 data class ConfirmPoopQuality(
-    val quality: PoopType
+    val quality: BowelQuality
 ) : Destinations
 
 @StringRes
@@ -122,7 +122,7 @@ fun getDestination(routeName: String?): Destinations {
             Setting,
             ChooseEntry,
             PoopQuality,
-            ConfirmPoopQuality(PoopType.TYPE_1)
+            ConfirmPoopQuality(BowelQuality.TYPE_1)
         )
 
         for (screen in screens) {

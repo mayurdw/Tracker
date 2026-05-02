@@ -28,12 +28,12 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.mayurdw.fibretracker.R
+import com.mayurdw.fibretracker.model.domain.BowelQuality
 import com.mayurdw.fibretracker.model.domain.HomeData
 import com.mayurdw.fibretracker.model.domain.HomeData.DateData
 import com.mayurdw.fibretracker.model.domain.ListItem
 import com.mayurdw.fibretracker.model.domain.ListItem.FoodListItem
 import com.mayurdw.fibretracker.model.domain.ListItem.PoopListItem
-import com.mayurdw.fibretracker.model.domain.PoopType
 import com.mayurdw.fibretracker.ui.screens.core.FoodCardView
 import com.mayurdw.fibretracker.ui.theme.FibreTrackerTheme
 
@@ -283,7 +283,7 @@ internal class HomeScreenPreviewProvider : PreviewParameterProvider<HomeData> {
                     PoopListItem(
                         itemId = 3,
                         id = 1,
-                        quality = PoopType.TYPE_3,
+                        quality = BowelQuality.TYPE_3,
                         time = "01.23 pm"
                     )
                 )

@@ -1,11 +1,11 @@
 package com.mayurdw.fibretracker.data.helpers
 
+import com.mayurdw.fibretracker.model.domain.BowelQuality
 import com.mayurdw.fibretracker.model.domain.Entry
+import com.mayurdw.fibretracker.model.domain.EntryType.Bowel
 import com.mayurdw.fibretracker.model.domain.EntryType.Food
-import com.mayurdw.fibretracker.model.domain.EntryType.Poop
 import com.mayurdw.fibretracker.model.domain.FoodEntryData
 import com.mayurdw.fibretracker.model.domain.ListItem
-import com.mayurdw.fibretracker.model.domain.PoopType
 import com.mayurdw.fibretracker.model.entity.EntityType.BOWEL_MOVEMENT
 import com.mayurdw.fibretracker.model.entity.EntryEntity
 import com.mayurdw.fibretracker.model.entity.FoodEntity
@@ -38,7 +38,7 @@ fun convertFoodEntryEntityToFoodListItem(
 }
 
 fun convertBowelMovementIntoEntity(
-    type: PoopType,
+    type: BowelQuality,
     date: LocalDate,
     time: LocalTime
 ): EntryEntity {
@@ -73,7 +73,7 @@ fun convertBowelEntryEntityIntoEntry(
         id = bowelEntity.id,
         time = bowelEntity.time,
         date = bowelEntity.date,
-        info = Poop(
+        info = Bowel(
             quality = bowelEntity.quality!!
         )
     )

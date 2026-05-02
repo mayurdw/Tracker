@@ -22,13 +22,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.mayurdw.fibretracker.model.domain.PoopType
+import com.mayurdw.fibretracker.model.domain.BowelQuality
 import com.mayurdw.fibretracker.ui.theme.FibreTrackerTheme
 
 
 @Composable
 fun PoopQualityScreen(
-    onQualitySelected: (quality: PoopType) -> Unit
+    onQualitySelected: (quality: BowelQuality) -> Unit
 ) {
     LazyVerticalGrid(
         modifier = Modifier
@@ -40,7 +40,7 @@ fun PoopQualityScreen(
         horizontalArrangement = Arrangement.spacedBy(16.dp)
 
     ) {
-        items(PoopType.entries.toTypedArray()) {
+        items(BowelQuality.entries.toTypedArray()) {
             Card(
                 colors = CardDefaults.elevatedCardColors(
                     contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
