@@ -7,6 +7,7 @@ import androidx.room.Upsert
 import com.mayurdw.fibretracker.model.domain.EntryData
 import com.mayurdw.fibretracker.model.domain.FoodEntryData
 import com.mayurdw.fibretracker.model.entity.EntryEntity
+import com.mayurdw.fibretracker.model.entity.EntryEntityId
 import com.mayurdw.fibretracker.model.entity.FoodEntity
 import com.mayurdw.fibretracker.model.entity.FoodEntryEntity
 import com.mayurdw.fibretracker.model.entity.PoopEntity
@@ -74,7 +75,6 @@ interface AppDao {
     @Query("SELECT * from poop WHERE poop.date BETWEEN :startDate AND :endDate")
     fun getPoopEntries(startDate: LocalDate, endDate: LocalDate): Flow<List<PoopEntity>>
 
-
     @Query(
         "SELECT * from trackingEntry " +
                 "WHERE date BETWEEN :startDate AND :endDate " +
@@ -82,7 +82,10 @@ interface AppDao {
     )
     fun getEntries(startDate: LocalDate, endDate: LocalDate): Flow<List<EntryEntity>>
 
+    @Delete(entity = EntryEntity::class)
+    suspend fun deleteEntry(vararg id: EntryEntityId)
+
     @Upsert
-    suspend fun insertEntry(entryEntity: EntryEntity)
+    suspend fun upsertEntry(entryEntity: EntryEntity)
 
 }

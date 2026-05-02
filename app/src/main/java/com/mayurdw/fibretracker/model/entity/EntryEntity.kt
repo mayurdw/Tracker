@@ -34,3 +34,6 @@ data class EntryEntity(
     var id: Int = 0
 }
 
+data class EntryEntityId(
+    val id: Int
+)
