@@ -7,7 +7,7 @@ import com.mayurdw.fibretracker.model.domain.PoopType
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 
-@Entity(tableName = "entry")
+@Entity(tableName = "trackingEntry")
 data class EntryEntity(
     // Mandatory regardless of the entry type
     @ColumnInfo("date")
@@ -31,6 +31,6 @@ data class EntryEntity(
     val quality: PoopType? = null
 ) {
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0
+    var id: Int = 0
 }
 
