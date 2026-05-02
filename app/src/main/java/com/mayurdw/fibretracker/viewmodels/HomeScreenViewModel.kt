@@ -4,26 +4,18 @@ package com.mayurdw.fibretracker.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mayurdw.fibretracker.data.helpers.convertFoodEntryEntityToFoodListItem
 import com.mayurdw.fibretracker.data.helpers.getDateToday
 import com.mayurdw.fibretracker.data.helpers.getFormattedDate
-import com.mayurdw.fibretracker.data.helpers.getFormattedTime
-import com.mayurdw.fibretracker.data.usecase.IGetBowelMovementEntryUseCase
-import com.mayurdw.fibretracker.data.usecase.IGetFoodEntriesUseCase
-import com.mayurdw.fibretracker.model.domain.BowelQuality.entries
-import com.mayurdw.fibretracker.model.domain.FoodEntryData
+import com.mayurdw.fibretracker.data.usecase.IGetEntriesUseCase
+import com.mayurdw.fibretracker.model.domain.EntryType.Food
 import com.mayurdw.fibretracker.model.domain.HomeData
 import com.mayurdw.fibretracker.model.domain.HomeData.DateData
-import com.mayurdw.fibretracker.model.domain.ListItem
-import com.mayurdw.fibretracker.model.domain.ListItem.FoodListItem
-import com.mayurdw.fibretracker.model.entity.PoopEntity
 import com.mayurdw.fibretracker.viewmodels.UIState.Loading
 import com.mayurdw.fibretracker.viewmodels.UIState.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.datetime.DateTimeUnit.Companion.DAY
 import kotlinx.datetime.LocalDate
@@ -35,8 +27,7 @@ import kotlin.time.ExperimentalTime
 
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
-    private val getEntries: IGetFoodEntriesUseCase,
-    private val getBowelMovements: IGetBowelMovementEntryUseCase,
+    private val getEntries: IGetEntriesUseCase
 ) : ViewModel() {
     val homeStateFlow: StateFlow<UIState<HomeData>>
         field = MutableStateFlow<UIState<HomeData>>(Loading)
@@ -48,60 +39,24 @@ class HomeScreenViewModel @Inject constructor(
         viewModelScope.launch {
             homeStateFlow.emit(Loading)
 
-            combine(
-                getEntries(currentDate),
-                getBowelMovements(currentDate)
-            ) { current: List<FoodEntryData>, poopEntities: List<PoopEntity> ->
-                Pair(
-                    current,
-                    poopEntities
-                )
-            }
-                .collectLatest {
-                    val current = it.first
-                    val poopEntries = it.second
-                    var index = -1
+            getEntries(currentDate, currentDate).collectLatest { entries ->
+                var fibreForDay = ZERO
+                entries.filter { it.info is Food }
+                    .onEach { fibreForDay += (it.info as Food).fibreConsumedInGms }
 
-                    val foodList: List<FoodListItem> =
-                        current.map { entryData ->
-                            index += 1
-                            convertFoodEntryEntityToFoodListItem(entryData, index)
-                        }.sortedBy { listItem ->
-                            listItem.foodName
-                        }
-
-                    val date = currentDate.getFormattedDate()
-                    var totalFibre = ZERO
-                    current.forEach { food -> totalFibre += food.fibreConsumedInGms }
-
-
-                    val poopList = poopEntries.map { poopEntity ->
-                        index += 1
-                        ListItem.PoopListItem(
-                            itemId = index,
-                            id = poopEntity.id,
-                            quality = entries[poopEntity.quality],
-                            time = poopEntity.time.getFormattedTime()
-                        )
-                    }
-                    val listItems: List<ListItem> = buildList {
-                        addAll(foodList)
-                        addAll(poopList)
-                    }
-
-                    homeStateFlow.emit(
-                        Success(
-                            HomeData(
-                                hasNext = (todaysDate != currentDate),
-                                dateData = DateData(
-                                    formattedDate = date,
-                                    fibreOfTheDay = totalFibre.toString(),
-                                    listItem = listItems
-                                )
+                homeStateFlow.emit(
+                    Success(
+                        HomeData(
+                            hasNext = todaysDate != currentDate,
+                            dateData = DateData(
+                                fibreOfTheDay = fibreForDay.toString(),
+                                listItem = entries,
+                                formattedDate = currentDate.getFormattedDate()
                             )
                         )
                     )
-                }
+                )
+            }
         }
     }
 

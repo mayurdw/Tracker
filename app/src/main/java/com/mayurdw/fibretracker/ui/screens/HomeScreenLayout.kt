@@ -28,14 +28,21 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.mayurdw.fibretracker.R
+import com.mayurdw.fibretracker.data.helpers.getCurrentTime
+import com.mayurdw.fibretracker.data.helpers.getDateToday
+import com.mayurdw.fibretracker.data.helpers.getFormattedTime
 import com.mayurdw.fibretracker.model.domain.BowelQuality
+import com.mayurdw.fibretracker.model.domain.Entry
+import com.mayurdw.fibretracker.model.domain.EntryType
+import com.mayurdw.fibretracker.model.domain.EntryType.Bowel
+import com.mayurdw.fibretracker.model.domain.EntryType.Food
 import com.mayurdw.fibretracker.model.domain.HomeData
 import com.mayurdw.fibretracker.model.domain.HomeData.DateData
-import com.mayurdw.fibretracker.model.domain.ListItem
 import com.mayurdw.fibretracker.model.domain.ListItem.FoodListItem
 import com.mayurdw.fibretracker.model.domain.ListItem.PoopListItem
 import com.mayurdw.fibretracker.ui.screens.core.FoodCardView
 import com.mayurdw.fibretracker.ui.theme.FibreTrackerTheme
+import java.math.BigDecimal
 
 @Composable
 fun HomeScreenLayout(
@@ -157,8 +164,8 @@ private fun DatePicker(
 @Composable
 fun EntryList(
     modifier: Modifier = Modifier,
-    foodItems: List<ListItem>,
-    onCardSelected: (id: Int) -> Unit
+    foodItems: List<Entry>,
+    onCardSelected: (Int) -> Unit
 ) {
     LazyColumn(
         modifier = modifier
@@ -166,9 +173,9 @@ fun EntryList(
             .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(items = foodItems, key = { item: ListItem -> item.itemId }) { item ->
-            when (item) {
-                is FoodListItem -> {
+        items(items = foodItems, key = { item: Entry -> item.id }) { item ->
+            when (item.info) {
+                is Food -> {
                     FoodCardView(
                         onCardSelect = { onCardSelected(item.id) }
                     ) {
@@ -180,7 +187,7 @@ fun EntryList(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                item.foodName,
+                                item.info.name,
                                 style = MaterialTheme.typography.bodyLarge,
                             )
 
@@ -190,11 +197,14 @@ fun EntryList(
                                 verticalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 Text(
-                                    text = stringResource(R.string.var_gm, item.foodQuantity),
+                                    text = stringResource(R.string.var_gm, item.info.servingInGms),
                                     style = MaterialTheme.typography.bodyMedium
                                 )
                                 Text(
-                                    text = stringResource(R.string.var_gm, item.fibreThisMeal),
+                                    text = stringResource(
+                                        R.string.var_gm,
+                                        item.info.fibreConsumedInGms.toString()
+                                    ),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.inverseSurface
                                 )
@@ -203,7 +213,7 @@ fun EntryList(
                     }
                 }
 
-                is PoopListItem -> {
+                is Bowel -> {
                     FoodCardView(
                         onCardSelect = { onCardSelected(item.id) }
                     ) {
@@ -225,11 +235,11 @@ fun EntryList(
                                 verticalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 Text(
-                                    text = item.quality.title,
+                                    text = item.info.quality.title,
                                     style = MaterialTheme.typography.bodyMedium
                                 )
                                 Text(
-                                    text = item.time,
+                                    text = item.time.getFormattedTime(),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.inverseSurface
                                 )
@@ -264,37 +274,35 @@ internal class HomeScreenPreviewProvider : PreviewParameterProvider<HomeData> {
             hasNext = true,
             dateData = DateData(
                 "29/5/25",
-                fibreOfTheDay = "0.8",
-                listItem = listOf(
-                    FoodListItem(
-                        itemId = 1,
-                        id = 1,
-                        foodQuantity = "34.9",
-                        foodName = "Potato",
-                        fibreThisMeal = "0.3"
-                    ),
-                    FoodListItem(
-                        itemId = 2,
-                        id = 2,
-                        foodQuantity = "15.23",
-                        foodName = "Chia",
-                        fibreThisMeal = "0.5"
-                    ),
-                    PoopListItem(
-                        itemId = 3,
-                        id = 1,
-                        quality = BowelQuality.TYPE_3,
-                        time = "01.23 pm"
-                    )
-                )
+                fibreOfTheDay = "0.0",
+                listItem = emptyList()
             )
         ),
         HomeData(
             hasNext = false,
             dateData = DateData(
                 formattedDate = "30/5/25",
-                fibreOfTheDay = "0.0",
-                listItem = emptyList()
+                fibreOfTheDay = "0.8",
+                listItem = listOf(
+                    Entry(
+                        id = 1,
+                        time = getCurrentTime(),
+                        date = getDateToday(),
+                        info = Food(
+                            name = "Chia",
+                            servingInGms = 28,
+                            fibrePerMicroGrams = 10
+                        )
+                    ),
+                    Entry(
+                        id = 2,
+                        time = getCurrentTime(),
+                        date = getDateToday(),
+                        info = Bowel(
+                            quality = BowelQuality.TYPE_3
+                        )
+                    )
+                )
             )
         )
     )

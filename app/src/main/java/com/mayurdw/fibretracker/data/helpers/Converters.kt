@@ -4,8 +4,6 @@ import com.mayurdw.fibretracker.model.domain.BowelQuality
 import com.mayurdw.fibretracker.model.domain.Entry
 import com.mayurdw.fibretracker.model.domain.EntryType.Bowel
 import com.mayurdw.fibretracker.model.domain.EntryType.Food
-import com.mayurdw.fibretracker.model.domain.FoodEntryData
-import com.mayurdw.fibretracker.model.domain.ListItem
 import com.mayurdw.fibretracker.model.entity.EntityType.BOWEL_MOVEMENT
 import com.mayurdw.fibretracker.model.entity.EntryEntity
 import com.mayurdw.fibretracker.model.entity.FoodEntity
@@ -20,20 +18,6 @@ fun convertFoodEntityToEntryEntity(foodEntity: FoodEntity): FoodEntryEntity {
         foodId = foodEntity.id,
         foodServingInGms = foodEntity.singleServingSizeInGm,
         date = date
-    )
-}
-
-fun convertFoodEntryEntityToFoodListItem(
-    entryData: FoodEntryData,
-    index: Int
-): ListItem.FoodListItem {
-    return ListItem.FoodListItem(
-        id = entryData.id,
-        foodName = entryData.name,
-        foodQuantity =
-            "${entryData.servingInGms}",
-        fibreThisMeal = entryData.fibreConsumedInGms.toString(),
-        itemId = index
     )
 }
 

@@ -6,7 +6,7 @@ data class HomeData(
 ) {
     data class DateData(
         val formattedDate: String,
-        val listItem: List<ListItem>,
+        val listItem: List<Entry>,
         val fibreOfTheDay: String
     )
 }
