@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bathroom
 import androidx.compose.material.icons.filled.SetMeal
@@ -20,13 +19,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.mayurdw.fibretracker.ui.destinations.AddFoodItem
+import com.mayurdw.fibretracker.ui.destinations.BowelQuality
 import com.mayurdw.fibretracker.ui.destinations.Destinations
-import com.mayurdw.fibretracker.ui.destinations.Home
-import com.mayurdw.fibretracker.ui.destinations.PoopQuality
 import com.mayurdw.fibretracker.ui.theme.FibreTrackerTheme
 
 
@@ -102,7 +99,7 @@ fun ChooseEntryScreen(
             cardText = "Record Bowel Movement",
             icon = Icons.Filled.Bathroom
         ) {
-            onEntrySelected(PoopQuality)
+            onEntrySelected(BowelQuality)
         }
 
     }

@@ -31,18 +31,14 @@ import com.mayurdw.fibretracker.R
 import com.mayurdw.fibretracker.data.helpers.getCurrentTime
 import com.mayurdw.fibretracker.data.helpers.getDateToday
 import com.mayurdw.fibretracker.data.helpers.getFormattedTime
-import com.mayurdw.fibretracker.model.domain.BowelQuality
+import com.mayurdw.fibretracker.model.domain.BowelType
 import com.mayurdw.fibretracker.model.domain.Entry
-import com.mayurdw.fibretracker.model.domain.EntryType
 import com.mayurdw.fibretracker.model.domain.EntryType.Bowel
 import com.mayurdw.fibretracker.model.domain.EntryType.Food
 import com.mayurdw.fibretracker.model.domain.HomeData
 import com.mayurdw.fibretracker.model.domain.HomeData.DateData
-import com.mayurdw.fibretracker.model.domain.ListItem.FoodListItem
-import com.mayurdw.fibretracker.model.domain.ListItem.PoopListItem
 import com.mayurdw.fibretracker.ui.screens.core.FoodCardView
 import com.mayurdw.fibretracker.ui.theme.FibreTrackerTheme
-import java.math.BigDecimal
 
 @Composable
 fun HomeScreenLayout(
@@ -299,7 +295,7 @@ internal class HomeScreenPreviewProvider : PreviewParameterProvider<HomeData> {
                         time = getCurrentTime(),
                         date = getDateToday(),
                         info = Bowel(
-                            quality = BowelQuality.TYPE_3
+                            quality = BowelType.TYPE_3
                         )
                     )
                 )

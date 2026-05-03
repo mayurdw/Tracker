@@ -28,10 +28,10 @@ fun AddFoodItemScreen(
 
     when (entries) {
         is Success<*> -> {
-            val data = entries as Success<*>
+            val data = entries as Success<List<FoodEntity>>
 
             AddFoodItemList(
-                foodItems = data.data as List<FoodEntity>
+                foodItems = data.data
             ) {
                 onItemSelect(it)
             }

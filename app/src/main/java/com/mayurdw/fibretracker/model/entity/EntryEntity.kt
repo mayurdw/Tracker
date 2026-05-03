@@ -3,7 +3,7 @@ package com.mayurdw.fibretracker.model.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.mayurdw.fibretracker.model.domain.BowelQuality
+import com.mayurdw.fibretracker.model.domain.BowelType
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 
@@ -28,7 +28,7 @@ data class EntryEntity(
 
     // EntityType.BOWEL
     @ColumnInfo("quality")
-    val quality: BowelQuality? = null
+    val quality: BowelType? = null
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0

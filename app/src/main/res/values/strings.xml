@@ -20,4 +20,5 @@
     <string name="gm">gm</string>
     <string name="var_gm">%1$s gm</string>
     <string name="bowel_movement">Bowel Movement</string>
+    <string name="confirm_details">Confirm Details</string>
 </resources>

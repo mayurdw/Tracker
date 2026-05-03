@@ -4,7 +4,7 @@ import app.cash.turbine.test
 import com.mayurdw.fibretracker.TestDispatcherRule
 import com.mayurdw.fibretracker.data.database.AppDao
 import com.mayurdw.fibretracker.data.helpers.getDateToday
-import com.mayurdw.fibretracker.model.domain.BowelQuality.TYPE_3
+import com.mayurdw.fibretracker.model.domain.BowelType.TYPE_3
 import com.mayurdw.fibretracker.model.domain.EntryType.Bowel
 import com.mayurdw.fibretracker.model.domain.EntryType.Food
 import com.mayurdw.fibretracker.model.entity.EntityType.BOWEL_MOVEMENT

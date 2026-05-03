@@ -2,7 +2,7 @@ package com.mayurdw.fibretracker.model.domain
 
 import com.mayurdw.fibretracker.R
 
-enum class BowelQuality(val image: Int, val title: String, val desc: String) {
+enum class BowelType(val image: Int, val title: String, val desc: String) {
     TYPE_7(
         R.drawable.type_7, "Type 7", "Watery with no solid pieces"
     ),

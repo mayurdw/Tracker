@@ -6,8 +6,9 @@ import com.mayurdw.fibretracker.data.helpers.getDateTimeNow
 import com.mayurdw.fibretracker.data.helpers.getFormattedDate
 import com.mayurdw.fibretracker.data.helpers.getFormattedTime
 import com.mayurdw.fibretracker.data.usecase.IAddBowelMovementEntryUseCase
-import com.mayurdw.fibretracker.model.domain.BowelQuality
-import com.mayurdw.fibretracker.model.entity.PoopEntity
+import com.mayurdw.fibretracker.model.domain.BowelType
+import com.mayurdw.fibretracker.model.entity.EntityType.BOWEL_MOVEMENT
+import com.mayurdw.fibretracker.model.entity.EntryEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,7 +21,7 @@ import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
 
 sealed interface ConfirmQualityIntents {
-    data class HandleNewType(val type: BowelQuality) : ConfirmQualityIntents
+    data class HandleNewType(val type: BowelType) : ConfirmQualityIntents
     data class HandleUpdatedTime(val hour: Int, val min: Int) : ConfirmQualityIntents
     data class HandleUpdatedDate(val newTimeInMilliSec: Long?) : ConfirmQualityIntents
     data object HandleDateDismissed : ConfirmQualityIntents
@@ -31,15 +32,15 @@ sealed interface ConfirmQualityIntents {
 }
 
 @HiltViewModel
-class ConfirmPoopQualityViewModel @Inject constructor(
+class ConfirmBowelQualityViewModel @Inject constructor(
     private val addPoop: IAddBowelMovementEntryUseCase
 ) : ViewModel() {
-    val uiState: StateFlow<UIState<ConfirmPoopQualityUiData>>
-        field = MutableStateFlow<UIState<ConfirmPoopQualityUiData>>(UIState.Loading)
+    val uiState: StateFlow<UIState<ConfirmBowelQualityData>>
+        field = MutableStateFlow<UIState<ConfirmBowelQualityData>>(UIState.Loading)
     val submissionSuccessful: StateFlow<Boolean>
         field = MutableStateFlow<Boolean>(false)
 
-    private lateinit var uiData: ConfirmPoopQualityUiData
+    private lateinit var uiData: ConfirmBowelQualityData
 
     fun handleIntent(qualityIntents: ConfirmQualityIntents) {
         when (qualityIntents) {
@@ -54,13 +55,15 @@ class ConfirmPoopQualityViewModel @Inject constructor(
             ConfirmQualityIntents.HandleSubmission -> {
                 viewModelScope.launch {
                     uiState.value = UIState.Loading
-                    val entity = PoopEntity(
-                        quality = uiData.type.ordinal,
+                    val entity = EntryEntity(
+                        type = BOWEL_MOVEMENT,
                         time = LocalTime(uiData.hour, uiData.min),
-                        date = LocalDate.fromEpochDays(uiData.dateInMilliSec.milliseconds.inWholeDays)
+                        date = LocalDate.fromEpochDays(uiData.dateInMilliSec.milliseconds.inWholeDays),
+                        quality = uiData.type
                     )
 
-                    addPoop(entity)
+                    // TODO: Change this
+//                    addPoop(entity)
                     submissionSuccessful.value = true
                 }
             }
@@ -107,11 +110,11 @@ class ConfirmPoopQualityViewModel @Inject constructor(
         }
     }
 
-    private fun handlePoopType(type: BowelQuality) {
+    private fun handlePoopType(type: BowelType) {
 
         val instance = getDateTimeNow()
 
-        uiData = ConfirmPoopQualityUiData(
+        uiData = ConfirmBowelQualityData(
             type = type,
             formattedTime = instance.time.getFormattedTime(),
             formattedDate = instance.date.getFormattedDate(),
@@ -124,8 +127,8 @@ class ConfirmPoopQualityViewModel @Inject constructor(
     }
 }
 
-data class ConfirmPoopQualityUiData(
-    val type: BowelQuality,
+data class ConfirmBowelQualityData(
+    val type: BowelType,
     val formattedDate: String,
     val formattedTime: String,
     val showTimeDialog: Boolean,

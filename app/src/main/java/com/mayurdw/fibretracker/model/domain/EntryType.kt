@@ -12,5 +12,5 @@ sealed interface EntryType {
             BigDecimal.valueOf(servingInGms * fibrePerMicroGrams / 1_000_000.00)
     }
 
-    data class Bowel(val quality: BowelQuality) : EntryType
+    data class Bowel(val quality: BowelType) : EntryType
 }

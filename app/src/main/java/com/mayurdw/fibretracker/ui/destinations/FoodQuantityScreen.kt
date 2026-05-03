@@ -34,12 +34,6 @@ fun FoodQuantityScreen(
     }
 
     when (state) {
-        is Loading -> {
-            LoadingScreen()
-        }
-
-        is Error -> {}
-
         is Success<*> -> {
             val foodEntity = (state as Success<*>).data as FoodEntity
 
@@ -55,6 +49,12 @@ fun FoodQuantityScreen(
                 viewModel.insertNewEntry(foodEntity, foodQuantity)
             }
         }
+
+        is Loading -> {
+            LoadingScreen()
+        }
+
+        is Error -> {}
 
 
     }

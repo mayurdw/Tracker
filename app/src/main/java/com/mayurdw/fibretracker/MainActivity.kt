@@ -18,6 +18,7 @@ import com.mayurdw.fibretracker.ui.destinations.AddFoodItem
 import com.mayurdw.fibretracker.ui.destinations.AddFoodItemScreen
 import com.mayurdw.fibretracker.ui.destinations.AddNewFoodItem
 import com.mayurdw.fibretracker.ui.destinations.AddNewFoodScreen
+import com.mayurdw.fibretracker.ui.destinations.BowelQuality
 import com.mayurdw.fibretracker.ui.destinations.Chart
 import com.mayurdw.fibretracker.ui.destinations.ChartScreen
 import com.mayurdw.fibretracker.ui.destinations.ChooseEntry
@@ -31,13 +32,12 @@ import com.mayurdw.fibretracker.ui.destinations.Home
 import com.mayurdw.fibretracker.ui.destinations.HomeScreen
 import com.mayurdw.fibretracker.ui.destinations.Plan
 import com.mayurdw.fibretracker.ui.destinations.PlanScreen
-import com.mayurdw.fibretracker.ui.destinations.PoopQuality
 import com.mayurdw.fibretracker.ui.destinations.SelectFoodToEdit
 import com.mayurdw.fibretracker.ui.destinations.Setting
 import com.mayurdw.fibretracker.ui.destinations.SettingsScreen
 import com.mayurdw.fibretracker.ui.destinations.getDestination
 import com.mayurdw.fibretracker.ui.screens.ChooseEntryScreen
-import com.mayurdw.fibretracker.ui.screens.ConfirmPoopQualityScreen
+import com.mayurdw.fibretracker.ui.screens.ConfirmBowelQualityScreen
 import com.mayurdw.fibretracker.ui.screens.EditMenuScreen
 import com.mayurdw.fibretracker.ui.screens.FibreTrackerTopBar
 import com.mayurdw.fibretracker.ui.screens.PoopQualityScreen
@@ -154,7 +154,7 @@ class MainActivity : ComponentActivity() {
                             }
                         }
 
-                        composable<PoopQuality> {
+                        composable<BowelQuality> {
                             PoopQualityScreen {
                                 navController.navigate(ConfirmPoopQuality(it))
                             }
@@ -163,7 +163,7 @@ class MainActivity : ComponentActivity() {
                         composable<ConfirmPoopQuality> {
                             val type: ConfirmPoopQuality = it.toRoute()
 
-                            ConfirmPoopQualityScreen(
+                            ConfirmBowelQualityScreen(
                                 type = type.quality,
                                 onTypeClicked = { navController.navigateUp() },
                                 onSaveSuccessful = { navController.popBackStack(Home, false) }

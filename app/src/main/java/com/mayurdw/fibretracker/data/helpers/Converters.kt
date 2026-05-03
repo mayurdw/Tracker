@@ -1,6 +1,6 @@
 package com.mayurdw.fibretracker.data.helpers
 
-import com.mayurdw.fibretracker.model.domain.BowelQuality
+import com.mayurdw.fibretracker.model.domain.BowelType
 import com.mayurdw.fibretracker.model.domain.Entry
 import com.mayurdw.fibretracker.model.domain.EntryType.Bowel
 import com.mayurdw.fibretracker.model.domain.EntryType.Food
@@ -22,7 +22,7 @@ fun convertFoodEntityToEntryEntity(foodEntity: FoodEntity): FoodEntryEntity {
 }
 
 fun convertBowelMovementIntoEntity(
-    type: BowelQuality,
+    type: BowelType,
     date: LocalDate,
     time: LocalTime
 ): EntryEntity {
