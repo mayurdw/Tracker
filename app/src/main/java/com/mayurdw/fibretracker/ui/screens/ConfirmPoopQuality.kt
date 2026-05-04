@@ -21,6 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mayurdw.fibretracker.R
+import com.mayurdw.fibretracker.data.helpers.getCurrentTime
+import com.mayurdw.fibretracker.data.helpers.getDateToday
 import com.mayurdw.fibretracker.model.domain.BowelType
 import com.mayurdw.fibretracker.model.domain.BowelType.TYPE_4
 import com.mayurdw.fibretracker.ui.screens.core.LoadingScreen
@@ -102,11 +104,8 @@ fun ConfirmBowelQualityScreenLayout(
 
     ConfirmEntryDetailsScreenLayout(
         headerTitle = R.string.confirm_details,
-        formattedDate = uiData.formattedDate,
-        formattedTime = uiData.formattedTime,
-        hour = uiData.hour,
-        min = uiData.min,
-        dateInMilliSec = uiData.dateInMilliSec,
+        time = uiData.time,
+        date = uiData.date,
         showDateDialog = uiData.showDateDialog,
         showTimeDialog = uiData.showTimeDialog,
         onDateDialogDismissed = onDateDialogDismissed,
@@ -140,7 +139,13 @@ fun ConfirmBowelQualityScreenLayout(
                     )
                 }
             }
-        }
+        },
+        footerDetailsLayout = {
+
+        },
+        canDelete = false,
+        buttonEnabled = true,
+        onDeleteClicked = {}
     )
 }
 
@@ -149,33 +154,24 @@ class ConfirmBowelQualityProvider : PreviewParameterProvider<ConfirmBowelQuality
     override val values: Sequence<ConfirmBowelQualityData> = sequenceOf(
         ConfirmBowelQualityData(
             type = TYPE_4,
-            formattedDate = "23/04/26",
-            formattedTime = "15.28 pm",
+            date = getDateToday(),
+            time = getCurrentTime(),
             showTimeDialog = false,
             showDateDialog = false,
-            hour = 15,
-            min = 28,
-            dateInMilliSec = 0L
         ),
         ConfirmBowelQualityData(
             type = TYPE_4,
-            formattedDate = "23/04/26",
-            formattedTime = "15.28 pm",
+            date = getDateToday(),
+            time = getCurrentTime(),
             showTimeDialog = true,
             showDateDialog = false,
-            hour = 3,
-            min = 28,
-            dateInMilliSec = 0L
         ),
         ConfirmBowelQualityData(
             type = TYPE_4,
-            formattedDate = "23/04/26",
-            formattedTime = "15.28 pm",
+            date = getDateToday(),
+            time = getCurrentTime(),
             showTimeDialog = false,
             showDateDialog = true,
-            hour = 15,
-            min = 28,
-            dateInMilliSec = 0L
         )
     )
 

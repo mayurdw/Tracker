@@ -9,6 +9,7 @@ import kotlinx.datetime.format
 import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
+import kotlin.time.Duration.Companion.days
 
 
 fun getDateTimeNow(): LocalDateTime {
@@ -33,6 +34,10 @@ fun LocalDate.getFormattedDate(): String {
     }
 
     return this.format(format)
+}
+
+fun LocalDate.toDateInMilliSecs(): Long {
+    return this.toEpochDays().days.inWholeMilliseconds
 }
 
 fun LocalTime.getFormattedTime(): String {

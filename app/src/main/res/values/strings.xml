@@ -21,4 +21,9 @@
     <string name="var_gm">%1$s gm</string>
     <string name="bowel_movement">Bowel Movement</string>
     <string name="confirm_details">Confirm Details</string>
+    <string name="quantity_in_grams">Quantity in Grams</string>
+    <string name="fibre_per_gram">Fibre Per Gram</string>
+    <string name="time">Time</string>
+    <string name="date">Date</string>
+    <string name="fibre_consumed">Fibre consumed</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.mayurdw.fibretracker.ui.screens
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,31 +22,35 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.mayurdw.fibretracker.R
+import com.mayurdw.fibretracker.data.helpers.getFormattedDate
+import com.mayurdw.fibretracker.data.helpers.getFormattedTime
+import com.mayurdw.fibretracker.data.helpers.toDateInMilliSecs
 import com.mayurdw.fibretracker.ui.screens.core.DateDialog
 import com.mayurdw.fibretracker.ui.screens.core.TimeDialog
-import com.mayurdw.fibretracker.viewmodels.ConfirmBowelQualityData
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalTime
 
 
 @Composable
 fun ConfirmEntryDetailsScreenLayout(
     entryDetailsLayout: @Composable () -> Unit,
-    @StringRes headerTitle: Int,
-    formattedDate: String,
-    formattedTime: String,
-    hour: Int,
-    min: Int,
-    dateInMilliSec: Long,
+    footerDetailsLayout: @Composable () -> Unit,
+    headerTitle: String,
+    time: LocalTime,
+    date: LocalDate,
     showDateDialog: Boolean,
     showTimeDialog: Boolean,
+    canDelete: Boolean,
+    buttonEnabled: Boolean,
     onDateDialogDismissed: () -> Unit,
     onDateDialogOpened: () -> Unit,
     onTimeDialogDismissed: () -> Unit,
     onTimeDialogOpened: () -> Unit,
     onTimeUpdated: (hour: Int, min: Int) -> Unit,
     onDateUpdated: (newDate: Long?) -> Unit,
+    onDeleteClicked: () -> Unit,
     onSubmitClicked: () -> Unit,
 ) {
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -62,7 +68,7 @@ fun ConfirmEntryDetailsScreenLayout(
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start,
-                text = stringResource(headerTitle),
+                text = headerTitle,
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -75,7 +81,7 @@ fun ConfirmEntryDetailsScreenLayout(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Date",
+                    text = stringResource(R.string.date),
                     color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.bodyMedium
                 )
@@ -87,7 +93,7 @@ fun ConfirmEntryDetailsScreenLayout(
                     Text(
                         modifier = Modifier
                             .padding(8.dp),
-                        text = formattedDate,
+                        text = date.getFormattedDate(),
                         textAlign = TextAlign.Center
                     )
                 }
@@ -98,7 +104,7 @@ fun ConfirmEntryDetailsScreenLayout(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Time",
+                    text = stringResource(R.string.time),
                     color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.bodyMedium
                 )
@@ -110,19 +116,44 @@ fun ConfirmEntryDetailsScreenLayout(
                     Text(
                         modifier = Modifier
                             .padding(8.dp),
-                        text = formattedTime,
+                        text = time.getFormattedTime(),
                         textAlign = TextAlign.Center
                     )
                 }
             }
+
+            footerDetailsLayout()
         }
 
-        Button(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 32.dp), onClick = onSubmitClicked
+                .padding(bottom = 32.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(stringResource(R.string.submit))
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                onClick = onSubmitClicked,
+                enabled = buttonEnabled
+            ) {
+                Text(stringResource(R.string.submit))
+            }
+
+            if (canDelete) {
+                OutlinedButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = true,
+                    onClick = onDeleteClicked,
+                    border = BorderStroke(1.dp, color = MaterialTheme.colorScheme.error)
+                ) {
+                    Text(
+                        text = "Delete",
+                        color = MaterialTheme.colorScheme.error
+                    )
+
+                }
+            }
         }
     }
 
@@ -130,8 +161,8 @@ fun ConfirmEntryDetailsScreenLayout(
 
     if (showTimeDialog) {
         TimeDialog(
-            hour = hour,
-            min = min,
+            hour = time.hour,
+            min = time.minute,
             onDismiss = onTimeDialogDismissed,
             onConfirmation = onTimeUpdated
         )
@@ -139,10 +170,50 @@ fun ConfirmEntryDetailsScreenLayout(
 
     if (showDateDialog) {
         DateDialog(
-            dateInMilliSec = dateInMilliSec,
+            dateInMilliSec = date.toDateInMilliSecs(),
             onDismiss = onDateDialogDismissed,
             onConfirmation = onDateUpdated
         )
     }
+}
 
+@Composable
+fun ConfirmEntryDetailsScreenLayout(
+    entryDetailsLayout: @Composable () -> Unit,
+    footerDetailsLayout: @Composable () -> Unit,
+    @StringRes headerTitle: Int,
+    time: LocalTime,
+    date: LocalDate,
+    showDateDialog: Boolean,
+    showTimeDialog: Boolean,
+    canDelete: Boolean,
+    buttonEnabled: Boolean,
+    onDateDialogDismissed: () -> Unit,
+    onDateDialogOpened: () -> Unit,
+    onTimeDialogDismissed: () -> Unit,
+    onTimeDialogOpened: () -> Unit,
+    onTimeUpdated: (hour: Int, min: Int) -> Unit,
+    onDateUpdated: (newDate: Long?) -> Unit,
+    onDeleteClicked: () -> Unit,
+    onSubmitClicked: () -> Unit,
+) {
+    ConfirmEntryDetailsScreenLayout(
+        entryDetailsLayout,
+        footerDetailsLayout,
+        stringResource(headerTitle),
+        time,
+        date,
+        showDateDialog,
+        showTimeDialog,
+        canDelete,
+        buttonEnabled,
+        onDateDialogDismissed,
+        onDateDialogOpened,
+        onTimeDialogDismissed,
+        onTimeDialogOpened,
+        onTimeUpdated,
+        onDateUpdated,
+        onDeleteClicked,
+        onSubmitClicked
+    )
 }
