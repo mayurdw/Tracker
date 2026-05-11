@@ -2,30 +2,50 @@ package com.mayurdw.fibretracker.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mayurdw.fibretracker.data.helpers.getCurrentTime
 import com.mayurdw.fibretracker.data.usecase.IDeleteEntryUseCase
 import com.mayurdw.fibretracker.data.usecase.IGetEntryUseCase
+import com.mayurdw.fibretracker.data.usecase.IGetFoodUseCase
 import com.mayurdw.fibretracker.data.usecase.IUpdateEntryUseCase
 import com.mayurdw.fibretracker.model.domain.EntryData
 import com.mayurdw.fibretracker.model.entity.FoodEntryEntity
+import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent
+import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.Delete
+import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.DismissDate
+import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.DismissTime
+import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.None
+import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.OpenDate
+import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.OpenTime
+import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.Submit
+import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.UpdateDate
+import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.UpdateTime
 import com.mayurdw.fibretracker.viewmodels.UIState.Error
 import com.mayurdw.fibretracker.viewmodels.UIState.Loading
 import com.mayurdw.fibretracker.viewmodels.UIState.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDate.Companion.fromEpochDays
+import kotlinx.datetime.LocalTime
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class EditFoodEntryViewModel @Inject constructor(
     private val getEntry: IGetEntryUseCase,
+    private val getFood: IGetFoodUseCase,
     private val updateEntry: IUpdateEntryUseCase,
     private val deleteEntry: IDeleteEntryUseCase
 ) : ViewModel() {
+    // TODO: Modify that EntryData to Entry
+    val uiState: StateFlow<UIState<FoodQuantityData>>
+        field = MutableStateFlow<UIState<FoodQuantityData>>(Loading)
 
-    val selectedEntryFlow: StateFlow<UIState<EntryData>>
-        field = MutableStateFlow<UIState<EntryData>>(Loading)
+    private lateinit var _uiData: FoodQuantityData
+    private lateinit var entry: EntryData
 
     val saveSuccessful: StateFlow<Boolean>
         field = MutableStateFlow<Boolean>(false)
@@ -35,14 +55,33 @@ class EditFoodEntryViewModel @Inject constructor(
             val entry = getEntry(selectedEntryId).firstOrNull()
 
             entry?.let {
-                selectedEntryFlow.emit(Success(entry))
+                this@EditFoodEntryViewModel.entry = entry
+                getFood(entry.foodId).collectLatest { food ->
+                    food.getOrNull()?.let {
+                        _uiData = FoodQuantityData(
+                            entity = it,
+                            // TODO: Use entry date and time
+                            date = entry.date,
+                            time = getCurrentTime(),
+                            showDateDialog = false,
+                            showTimeDialog = false,
+                            canDelete = true,
+                            submitEnabled = false,
+                            foodQuantity = entry.servingInGms.toString()
+                        )
+
+                        uiState.emit(Success(_uiData))
+                    }
+                } ?: run {
+                    uiState.emit(Error)
+                }
             } ?: run {
-                selectedEntryFlow.emit(Error)
+                uiState.emit(Error)
             }
         }
     }
 
-    fun updateEntry(newFoodQuantity: String, entry: EntryData) {
+    private fun updateEntry(newFoodQuantity: String, entry: EntryData) {
         if (newFoodQuantity.toInt() != entry.servingInGms) {
 
             viewModelScope.launch {
@@ -60,17 +99,77 @@ class EditFoodEntryViewModel @Inject constructor(
         }
     }
 
-    fun isEdited(newValue: String?, entry: EntryData): Boolean {
-        if (newValue.isNullOrBlank() && newValue?.toIntOrNull() == null)
-            return false
+    fun isEdited(newValue: String?) {
+        viewModelScope.launch {
+            val intValue = newValue?.trim()?.toIntOrNull()
 
-        return entry.servingInGms != newValue.toInt()
+            intValue?.let {
+                if (entry.servingInGms != it) {
+                    _uiData = _uiData.copy(foodQuantity = it.toString())
+
+                    uiState.emit(Success(_uiData))
+                }
+            }
+        }
     }
 
-    fun delete(entry: EntryData) {
+    private fun delete(entry: EntryData) {
         viewModelScope.launch {
             deleteEntry(entry)
             saveSuccessful.emit(true)
+        }
+    }
+
+    fun onUserEvent(detailsIntent: ConfirmEntryDetailsIntent) {
+        viewModelScope.launch {
+            when (detailsIntent) {
+                None -> {}
+                Delete -> {
+                    delete(entry)
+                }
+                DismissDate -> {
+                    _uiData = _uiData.copy(showDateDialog = false)
+                }
+
+                DismissTime -> {
+                    _uiData = _uiData.copy(showTimeDialog = false)
+                }
+
+                OpenDate -> {
+                    _uiData = _uiData.copy(showDateDialog = true)
+                }
+
+                OpenTime -> {
+                    _uiData = _uiData.copy(showTimeDialog = true)
+                }
+
+                Submit -> {
+                    updateEntry(
+                        _uiData.foodQuantity,
+                        entry
+                    )
+                }
+
+                is UpdateDate -> {
+                    detailsIntent.newTimeInMilliSec?.let {
+
+                        val date = fromEpochDays(it.milliseconds.inWholeDays)
+                        _uiData = _uiData.copy(
+                            showDateDialog = false,
+                            date = date
+                        )
+                    }
+                }
+
+                is UpdateTime -> {
+                    _uiData = _uiData.copy(
+                        time = LocalTime(detailsIntent.hour, detailsIntent.min),
+                        showTimeDialog = false
+                    )
+                }
+            }
+
+            uiState.emit(Success(_uiData))
         }
     }
 }

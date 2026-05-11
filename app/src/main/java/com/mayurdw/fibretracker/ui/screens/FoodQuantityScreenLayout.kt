@@ -26,35 +26,36 @@ import androidx.compose.ui.unit.dp
 import com.mayurdw.fibretracker.R
 import com.mayurdw.fibretracker.data.helpers.getCurrentTime
 import com.mayurdw.fibretracker.data.helpers.getDateToday
+import com.mayurdw.fibretracker.model.entity.FoodEntity
 import com.mayurdw.fibretracker.ui.theme.FibreTrackerTheme
+import com.mayurdw.fibretracker.viewmodels.FoodQuantityData
 import kotlinx.coroutines.flow.collectLatest
-import java.math.BigDecimal
 
 @Composable
 fun FoodQuantityScreenLayout(
     modifier: Modifier = Modifier,
-    singleServingSizeInGm: Int,
-    foodName: String,
-    fibrePerGram: BigDecimal,
-    canDelete: Boolean,
-    buttonEnabled: (foodQuantity: String?) -> Boolean,
-    onDeleteClicked: () -> Unit,
-    onSaveClick: (foodQuantity: String) -> Unit
+    uiData: FoodQuantityData,
+    quantityUpdated: (foodQuantity: String?) -> Unit,
+    onUserEvent: (detailsIntent: ConfirmEntryDetailsIntent) -> Unit,
 ) {
     val foodQuantity =
-        rememberTextFieldState(initialText = singleServingSizeInGm.toString())
+        rememberTextFieldState(
+            initialText =
+                uiData.entity.singleServingSizeInGm.toString()
+        )
     var fibreQuantity =
         if (foodQuantity.text.isNotBlank()) {
-            fibrePerGram * foodQuantity.text.toString().toBigDecimal()
+            uiData.entity.fibrePerGram * foodQuantity.text.toString().toBigDecimal()
         } else {
             0
         }
 
     LaunchedEffect(foodQuantity) {
         snapshotFlow { foodQuantity.text.toString() }.collectLatest { newValue: String ->
+            quantityUpdated(newValue)
             if (newValue.isNotBlank()) {
                 fibreQuantity =
-                    fibrePerGram * newValue.toBigDecimal()
+                    uiData.entity.fibrePerGram * newValue.toBigDecimal()
             }
         }
     }
@@ -72,7 +73,7 @@ fun FoodQuantityScreenLayout(
                         .fillMaxWidth(),
                     state = foodQuantity,
                     label = { Text(stringResource(R.string.quantity_in_grams)) },
-                    placeholder = { Text("$singleServingSizeInGm") },
+                    placeholder = { Text("${uiData.entity.singleServingSizeInGm}") },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Number
                     ),
@@ -102,7 +103,10 @@ fun FoodQuantityScreenLayout(
 
                     Text(
                         modifier = modifier,
-                        text = stringResource(R.string.var_gm, fibrePerGram.toString()),
+                        text = stringResource(
+                            R.string.var_gm,
+                            uiData.entity.fibrePerGram.toString()
+                        ),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurface
                     )
@@ -130,25 +134,16 @@ fun FoodQuantityScreenLayout(
                 }
             }
         },
-        headerTitle = foodName,
-        time = getCurrentTime(),
-        date = getDateToday(),
-        showDateDialog = false,
-        showTimeDialog = false,
-        canDelete = false,
-        buttonEnabled = false,
-        onDateDialogDismissed = {},
-        onDateDialogOpened = {},
-        onTimeDialogDismissed = {},
-        onTimeDialogOpened = {},
-        onTimeUpdated = { _, _ ->
-
-        },
-        onDateUpdated = { _ ->
-
-        },
-        onDeleteClicked = {},
-        onSubmitClicked = {},
+        detailsData = ConfirmEntryDetailsData(
+            title = uiData.entity.name,
+            time = uiData.time,
+            date = uiData.date,
+            showDateDialog = uiData.showDateDialog,
+            showTimeDialog = uiData.showTimeDialog,
+            canDelete = uiData.canDelete,
+            submitEnabled = uiData.submitEnabled,
+        ),
+        onUserEvent = onUserEvent,
     )
 }
 
@@ -159,12 +154,21 @@ private fun FoodQuantityScreenPreview(
 ) {
     FibreTrackerTheme {
         FoodQuantityScreenLayout(
-            foodName = "Test",
-            singleServingSizeInGm = 40,
-            fibrePerGram = BigDecimal.ONE,
-            buttonEnabled = { true },
-            onDeleteClicked = {},
-            canDelete = deleteEnabled
+            uiData = FoodQuantityData(
+                entity = FoodEntity(
+                    name = "Test",
+                    singleServingSizeInGm = 40,
+                    fibrePerMicroGram = 1_000_00
+                ),
+                time = getCurrentTime(),
+                date = getDateToday(),
+                showDateDialog = false,
+                showTimeDialog = false,
+                submitEnabled = false,
+                canDelete = false,
+                foodQuantity = "4"
+            ),
+            quantityUpdated = {}
         ) { _ ->
 
         }
