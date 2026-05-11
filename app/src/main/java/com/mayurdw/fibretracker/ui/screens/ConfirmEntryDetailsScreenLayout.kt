@@ -1,6 +1,5 @@
 package com.mayurdw.fibretracker.ui.screens
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -25,31 +24,23 @@ import com.mayurdw.fibretracker.R
 import com.mayurdw.fibretracker.data.helpers.getFormattedDate
 import com.mayurdw.fibretracker.data.helpers.getFormattedTime
 import com.mayurdw.fibretracker.data.helpers.toDateInMilliSecs
+import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.Delete
+import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.DismissDate
+import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.DismissTime
+import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.OpenDate
+import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.OpenTime
+import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.Submit
+import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.UpdateDate
+import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.UpdateTime
 import com.mayurdw.fibretracker.ui.screens.core.DateDialog
 import com.mayurdw.fibretracker.ui.screens.core.TimeDialog
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.LocalTime
-
 
 @Composable
 fun ConfirmEntryDetailsScreenLayout(
+    detailsData: ConfirmEntryDetailsData,
     entryDetailsLayout: @Composable () -> Unit,
     footerDetailsLayout: @Composable () -> Unit,
-    headerTitle: String,
-    time: LocalTime,
-    date: LocalDate,
-    showDateDialog: Boolean,
-    showTimeDialog: Boolean,
-    canDelete: Boolean,
-    buttonEnabled: Boolean,
-    onDateDialogDismissed: () -> Unit,
-    onDateDialogOpened: () -> Unit,
-    onTimeDialogDismissed: () -> Unit,
-    onTimeDialogOpened: () -> Unit,
-    onTimeUpdated: (hour: Int, min: Int) -> Unit,
-    onDateUpdated: (newDate: Long?) -> Unit,
-    onDeleteClicked: () -> Unit,
-    onSubmitClicked: () -> Unit,
+    onUserEvent: (detailsIntent: ConfirmEntryDetailsIntent) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -68,7 +59,7 @@ fun ConfirmEntryDetailsScreenLayout(
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start,
-                text = headerTitle,
+                text = detailsData.title,
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -88,12 +79,12 @@ fun ConfirmEntryDetailsScreenLayout(
 
                 OutlinedCard(
                     modifier = Modifier.heightIn(48.dp),
-                    onClick = onDateDialogOpened,
+                    onClick = { onUserEvent(OpenDate) }
                 ) {
                     Text(
                         modifier = Modifier
                             .padding(8.dp),
-                        text = date.getFormattedDate(),
+                        text = detailsData.date.getFormattedDate(),
                         textAlign = TextAlign.Center
                     )
                 }
@@ -111,12 +102,12 @@ fun ConfirmEntryDetailsScreenLayout(
 
                 OutlinedCard(
                     modifier = Modifier.heightIn(48.dp),
-                    onClick = onTimeDialogOpened,
+                    onClick = { onUserEvent(OpenTime) }
                 ) {
                     Text(
                         modifier = Modifier
                             .padding(8.dp),
-                        text = time.getFormattedTime(),
+                        text = detailsData.time.getFormattedTime(),
                         textAlign = TextAlign.Center
                     )
                 }
@@ -134,17 +125,17 @@ fun ConfirmEntryDetailsScreenLayout(
             Button(
                 modifier = Modifier
                     .fillMaxWidth(),
-                onClick = onSubmitClicked,
-                enabled = buttonEnabled
+                onClick = { onUserEvent(Submit) },
+                enabled = detailsData.submitEnabled
             ) {
                 Text(stringResource(R.string.submit))
             }
 
-            if (canDelete) {
+            if (detailsData.canDelete) {
                 OutlinedButton(
                     modifier = Modifier.fillMaxWidth(),
                     enabled = true,
-                    onClick = onDeleteClicked,
+                    onClick = { onUserEvent(Delete) },
                     border = BorderStroke(1.dp, color = MaterialTheme.colorScheme.error)
                 ) {
                     Text(
@@ -159,61 +150,29 @@ fun ConfirmEntryDetailsScreenLayout(
 
 
 
-    if (showTimeDialog) {
+    if (detailsData.showTimeDialog) {
         TimeDialog(
-            hour = time.hour,
-            min = time.minute,
-            onDismiss = onTimeDialogDismissed,
-            onConfirmation = onTimeUpdated
+            hour = detailsData.time.hour,
+            min = detailsData.time.minute,
+            onDismiss = { onUserEvent(DismissTime) },
+            onConfirmation = { hour, min ->
+                onUserEvent(
+                    UpdateTime(
+                        hour,
+                        min
+                    )
+                )
+            }
         )
     }
 
-    if (showDateDialog) {
+    if (detailsData.showDateDialog) {
         DateDialog(
-            dateInMilliSec = date.toDateInMilliSecs(),
-            onDismiss = onDateDialogDismissed,
-            onConfirmation = onDateUpdated
+            dateInMilliSec = detailsData.date.toDateInMilliSecs(),
+            onDismiss = { onUserEvent(DismissDate) },
+            onConfirmation = {
+                onUserEvent(UpdateDate(it))
+            }
         )
     }
-}
-
-@Composable
-fun ConfirmEntryDetailsScreenLayout(
-    entryDetailsLayout: @Composable () -> Unit,
-    footerDetailsLayout: @Composable () -> Unit,
-    @StringRes headerTitle: Int,
-    time: LocalTime,
-    date: LocalDate,
-    showDateDialog: Boolean,
-    showTimeDialog: Boolean,
-    canDelete: Boolean,
-    buttonEnabled: Boolean,
-    onDateDialogDismissed: () -> Unit,
-    onDateDialogOpened: () -> Unit,
-    onTimeDialogDismissed: () -> Unit,
-    onTimeDialogOpened: () -> Unit,
-    onTimeUpdated: (hour: Int, min: Int) -> Unit,
-    onDateUpdated: (newDate: Long?) -> Unit,
-    onDeleteClicked: () -> Unit,
-    onSubmitClicked: () -> Unit,
-) {
-    ConfirmEntryDetailsScreenLayout(
-        entryDetailsLayout,
-        footerDetailsLayout,
-        stringResource(headerTitle),
-        time,
-        date,
-        showDateDialog,
-        showTimeDialog,
-        canDelete,
-        buttonEnabled,
-        onDateDialogDismissed,
-        onDateDialogOpened,
-        onTimeDialogDismissed,
-        onTimeDialogOpened,
-        onTimeUpdated,
-        onDateUpdated,
-        onDeleteClicked,
-        onSubmitClicked
-    )
 }

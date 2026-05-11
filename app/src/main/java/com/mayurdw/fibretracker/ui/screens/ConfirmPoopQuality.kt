@@ -13,6 +13,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -29,14 +30,7 @@ import com.mayurdw.fibretracker.ui.screens.core.LoadingScreen
 import com.mayurdw.fibretracker.ui.theme.FibreTrackerTheme
 import com.mayurdw.fibretracker.viewmodels.ConfirmBowelQualityData
 import com.mayurdw.fibretracker.viewmodels.ConfirmBowelQualityViewModel
-import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleDateDismissed
-import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleDateOpened
-import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleNewType
-import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleSubmission
-import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleTimeDismissed
-import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleTimeOpened
-import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleUpdatedDate
-import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleUpdatedTime
+import com.mayurdw.fibretracker.viewmodels.ConfirmBowelQualityIntents.HandleNewType
 import com.mayurdw.fibretracker.viewmodels.UIState.Loading
 import com.mayurdw.fibretracker.viewmodels.UIState.Success
 
@@ -66,21 +60,8 @@ fun ConfirmBowelQualityScreen(
 
             ConfirmBowelQualityScreenLayout(
                 uiData = poopData,
-                onTimeUpdated = { hour, min ->
-                    viewModel.handleIntent(
-                        HandleUpdatedTime(
-                            hour,
-                            min
-                        )
-                    )
-                },
                 onTypeClicked = onTypeClicked,
-                onDateDialogDismissed = { viewModel.handleIntent(HandleDateDismissed) },
-                onDateDialogOpened = { viewModel.handleIntent(HandleDateOpened) },
-                onTimeDialogDismissed = { viewModel.handleIntent(HandleTimeDismissed) },
-                onTimeDialogOpened = { viewModel.handleIntent(HandleTimeOpened) },
-                onDateUpdated = { viewModel.handleIntent(HandleUpdatedDate(it)) },
-                onSubmitClicked = { viewModel.handleIntent(HandleSubmission) },
+                onUserEvent = { viewModel.onUserEvent(it) }
             )
         }
 
@@ -92,29 +73,20 @@ fun ConfirmBowelQualityScreen(
 @Composable
 fun ConfirmBowelQualityScreenLayout(
     uiData: ConfirmBowelQualityData,
-    onDateDialogDismissed: () -> Unit,
-    onDateDialogOpened: () -> Unit,
-    onTimeDialogDismissed: () -> Unit,
-    onTimeDialogOpened: () -> Unit,
-    onTimeUpdated: (hour: Int, min: Int) -> Unit,
-    onDateUpdated: (newDate: Long?) -> Unit,
     onTypeClicked: () -> Unit,
-    onSubmitClicked: () -> Unit,
+    onUserEvent: (detailsIntent: ConfirmEntryDetailsIntent) -> Unit,
 ) {
 
     ConfirmEntryDetailsScreenLayout(
-        headerTitle = R.string.confirm_details,
-        time = uiData.time,
-        date = uiData.date,
-        showDateDialog = uiData.showDateDialog,
-        showTimeDialog = uiData.showTimeDialog,
-        onDateDialogDismissed = onDateDialogDismissed,
-        onDateDialogOpened = onDateDialogOpened,
-        onTimeDialogDismissed = onTimeDialogDismissed,
-        onTimeDialogOpened = onTimeDialogOpened,
-        onTimeUpdated = onTimeUpdated,
-        onDateUpdated = onDateUpdated,
-        onSubmitClicked = onSubmitClicked,
+        detailsData = ConfirmEntryDetailsData(
+            title = stringResource(R.string.confirm_details),
+            time = uiData.time,
+            date = uiData.date,
+            showDateDialog = uiData.showDateDialog,
+            showTimeDialog = uiData.showTimeDialog,
+            canDelete = false,
+            submitEnabled = true,
+        ),
         entryDetailsLayout = {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -143,9 +115,7 @@ fun ConfirmBowelQualityScreenLayout(
         footerDetailsLayout = {
 
         },
-        canDelete = false,
-        buttonEnabled = true,
-        onDeleteClicked = {}
+        onUserEvent = onUserEvent
     )
 }
 
@@ -186,14 +156,9 @@ private fun PreviewConfirmBowelQualityScreen(
     FibreTrackerTheme {
         ConfirmBowelQualityScreenLayout(
             uiData = uiData,
-            onTimeUpdated = { _, _ -> },
-            onTypeClicked = {},
-            onSubmitClicked = {},
-            onDateDialogDismissed = {},
-            onDateDialogOpened = {},
-            onTimeDialogDismissed = {},
-            onTimeDialogOpened = {},
-            onDateUpdated = {},
-        )
+            onTypeClicked = {}
+        ) {
+
+        }
     }
 }

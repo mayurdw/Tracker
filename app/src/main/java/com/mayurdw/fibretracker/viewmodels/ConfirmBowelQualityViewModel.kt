@@ -5,36 +5,28 @@ import androidx.lifecycle.viewModelScope
 import com.mayurdw.fibretracker.data.helpers.getDateTimeNow
 import com.mayurdw.fibretracker.data.usecase.IAddBowelMovementEntryUseCase
 import com.mayurdw.fibretracker.model.domain.BowelType
-import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleDateDismissed
-import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleDateOpened
-import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleNewType
-import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleSubmission
-import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleTimeDismissed
-import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleTimeOpened
-import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleUpdatedDate
-import com.mayurdw.fibretracker.viewmodels.ConfirmQualityIntents.HandleUpdatedTime
+import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent
+import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.Delete
+import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.DismissDate
+import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.DismissTime
+import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.None
+import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.OpenDate
+import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.OpenTime
+import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.Submit
+import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.UpdateDate
+import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.UpdateTime
+import com.mayurdw.fibretracker.viewmodels.ConfirmBowelQualityIntents.HandleNewType
 import com.mayurdw.fibretracker.viewmodels.UIState.Loading
+import com.mayurdw.fibretracker.viewmodels.UIState.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDate.Companion.fromEpochDays
 import kotlinx.datetime.LocalTime
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
-
-sealed interface ConfirmQualityIntents {
-    data class HandleNewType(val type: BowelType) : ConfirmQualityIntents
-    data class HandleUpdatedTime(val hour: Int, val min: Int) : ConfirmQualityIntents
-    data class HandleUpdatedDate(val newTimeInMilliSec: Long?) : ConfirmQualityIntents
-    data object HandleDateDismissed : ConfirmQualityIntents
-    data object HandleDateOpened : ConfirmQualityIntents
-    data object HandleTimeDismissed : ConfirmQualityIntents
-    data object HandleTimeOpened : ConfirmQualityIntents
-    data object HandleSubmission : ConfirmQualityIntents
-}
 
 @HiltViewModel
 class ConfirmBowelQualityViewModel @Inject constructor(
@@ -47,65 +39,15 @@ class ConfirmBowelQualityViewModel @Inject constructor(
 
     private lateinit var uiData: ConfirmBowelQualityData
 
-    fun handleIntent(qualityIntents: ConfirmQualityIntents) {
+    fun handleIntent(qualityIntents: ConfirmBowelQualityIntents) {
         when (qualityIntents) {
-            HandleDateDismissed -> {
-                uiData = uiData.copy(showDateDialog = false)
-            }
-
-            HandleDateOpened -> {
-                uiData = uiData.copy(showDateDialog = true)
-            }
-
-            HandleSubmission -> {
-                viewModelScope.launch {
-                    uiState.value = Loading
-
-                    addBowel(
-                        time = uiData.time,
-                        date = uiData.date,
-                        bowelType = uiData.type
-                    )
-                    submissionSuccessful.value = true
-                }
-            }
-
-            HandleTimeDismissed -> {
-                uiData = uiData.copy(showTimeDialog = false)
-            }
-
-            HandleTimeOpened -> {
-                uiData = uiData.copy(
-                    showTimeDialog = true
-                )
-            }
-
-            is HandleUpdatedDate -> {
-                qualityIntents.newTimeInMilliSec?.let {
-                    val date = fromEpochDays(it.milliseconds.inWholeDays)
-
-                    uiData = uiData.copy(
-                        date = date,
-                        showDateDialog = false
-                    )
-                }
-            }
-
-            is HandleUpdatedTime -> {
-                val time = LocalTime(qualityIntents.hour, qualityIntents.min)
-                uiData = uiData.copy(
-                    showTimeDialog = false,
-                    time = time
-                )
-            }
-
             is HandleNewType -> {
                 handlePoopType(qualityIntents.type)
             }
         }
 
         uiState.update {
-            UIState.Success(data = uiData)
+            Success(data = uiData)
         }
     }
 
@@ -121,12 +63,62 @@ class ConfirmBowelQualityViewModel @Inject constructor(
             showDateDialog = false,
         )
     }
+
+    fun onUserEvent(detailsIntent: ConfirmEntryDetailsIntent) {
+        viewModelScope.launch {
+            when (detailsIntent) {
+                None, Delete -> {}
+                DismissDate -> {
+                    uiData = uiData.copy(showDateDialog = false)
+                }
+
+                DismissTime -> {
+                    uiData = uiData.copy(showTimeDialog = false)
+                }
+
+                OpenDate -> {
+                    uiData = uiData.copy(showDateDialog = true)
+                }
+
+                OpenTime -> {
+                    uiData = uiData.copy(showTimeDialog = true)
+                }
+
+                Submit -> {
+                    uiState.value = Loading
+
+                    addBowel(
+                        time = uiData.time,
+                        date = uiData.date,
+                        bowelType = uiData.type
+                    )
+                    submissionSuccessful.value = true
+                }
+
+                is UpdateDate -> {
+                    detailsIntent.newTimeInMilliSec?.let {
+                        val date = fromEpochDays(it.milliseconds.inWholeDays)
+
+                        uiData = uiData.copy(
+                            date = date,
+                            showDateDialog = false
+                        )
+                    }
+                }
+
+                is UpdateTime -> {
+                    val time = LocalTime(detailsIntent.hour, detailsIntent.min)
+                    uiData = uiData.copy(
+                        showTimeDialog = false,
+                        time = time
+                    )
+                }
+            }
+
+            uiState.update {
+                Success(data = uiData)
+            }
+        }
+    }
 }
 
-data class ConfirmBowelQualityData(
-    val type: BowelType,
-    val time: LocalTime,
-    val date: LocalDate,
-    val showTimeDialog: Boolean,
-    val showDateDialog: Boolean
-)
