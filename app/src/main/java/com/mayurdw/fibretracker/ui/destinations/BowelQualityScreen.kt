@@ -27,7 +27,7 @@ import com.mayurdw.fibretracker.ui.theme.FibreTrackerTheme
 
 
 @Composable
-fun PoopQualityScreen(
+fun BowelQualityScreen(
     onQualitySelected: (quality: BowelType) -> Unit
 ) {
     LazyVerticalGrid(
@@ -82,9 +82,9 @@ fun PoopQualityScreen(
 
 @PreviewLightDark
 @Composable
-fun PreviewPoopQualityScreen() {
+fun PreviewBowelQualityScreen() {
     FibreTrackerTheme {
-        PoopQualityScreen {
+        BowelQualityScreen {
 
         }
     }
