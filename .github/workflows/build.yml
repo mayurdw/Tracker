@@ -26,7 +26,7 @@ jobs:
 
       - name: Build with Gradle
         if: github.ref_type == 'tag'
-        run: ./gradlew assemble
+        run: ./gradlew assemble && ./gradlew bundle
 
       - name: Sign Android Release APK
         if: github.ref_type == 'tag'
@@ -34,6 +34,7 @@ jobs:
         with:
           releaseDirectory: |
             app/build/outputs/apk/release
+            app/build/outputs/bundle/release
           signingKeyBase64: ${{ secrets.SIGNING_KEY }}
           output: build/release/signed
           alias: ${{ secrets.KEYSTORE_ALIAS }}
