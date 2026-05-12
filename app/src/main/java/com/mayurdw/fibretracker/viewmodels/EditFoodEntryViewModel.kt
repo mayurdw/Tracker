@@ -46,6 +46,7 @@ class EditFoodEntryViewModel @Inject constructor(
 
     fun getEntryData(selectedEntryId: Int) {
         viewModelScope.launch {
+            uiState.emit(Loading)
             val entry = getEntry(selectedEntryId)
 
             this@EditFoodEntryViewModel.entry = entry
@@ -65,6 +66,8 @@ class EditFoodEntryViewModel @Inject constructor(
                 submitEnabled = false,
                 foodQuantity = info.servingInGms.toString()
             )
+
+            uiState.emit(Success(_uiData))
         }
     }
 
@@ -87,15 +90,14 @@ class EditFoodEntryViewModel @Inject constructor(
 
     fun isEdited(newValue: String?) {
         viewModelScope.launch {
-            val intValue = newValue?.trim()?.toIntOrNull()
-
-            intValue?.let {
-                if ((entry.info as Food).servingInGms != it) {
-                    _uiData = _uiData.copy(foodQuantity = it.toString())
-
-                    uiState.emit(Success(_uiData))
-                }
+            if ((entry.info as Food).servingInGms != newValue?.trim()?.toIntOrNull()) {
+                _uiData = _uiData.copy(foodQuantity = newValue.toString(), submitEnabled = true)
+            } else {
+                _uiData = _uiData.copy(submitEnabled = false)
             }
+
+            uiState.emit(Success(_uiData))
+
         }
     }
 

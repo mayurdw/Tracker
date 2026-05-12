@@ -35,7 +35,9 @@ class UpdateEntryUseCase @Inject constructor(
                             date = entry.date,
                             time = entry.time,
                             foodServingInGms = entry.info.servingInGms
-                        )
+                        ).apply {
+                            id = entryEntity.id
+                        }
                     }
 
                     is Bowel -> {
@@ -43,7 +45,9 @@ class UpdateEntryUseCase @Inject constructor(
                             date = entry.date,
                             time = entry.time,
                             quality = entry.info.quality
-                        )
+                        ).apply {
+                            id = entryEntity.id
+                        }
                     }
                 }
             entryDao.upsertEntry(newEntity)

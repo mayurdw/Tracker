@@ -69,6 +69,8 @@ class FoodQuantityViewModel @Inject constructor(
                 submitEnabled = !newValue.isNullOrBlank(),
                 foodQuantity = newValue.orEmpty()
             )
+
+            uiState.emit(Success(_uiData))
         }
     }
 
