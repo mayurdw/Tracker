@@ -6,7 +6,6 @@ import com.mayurdw.fibretracker.data.helpers.getCurrentTime
 import com.mayurdw.fibretracker.data.helpers.getDateToday
 import com.mayurdw.fibretracker.data.usecase.IAddEntryUseCase
 import com.mayurdw.fibretracker.data.usecase.IGetFoodUseCase
-import com.mayurdw.fibretracker.model.entity.FoodEntity
 import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent
 import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.Delete
 import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.DismissDate
@@ -94,7 +93,7 @@ class FoodQuantityViewModel @Inject constructor(
                     _uiData = _uiData.copy(showTimeDialog = true)
                 }
 
-                Submit -> insertNewEntry(_uiData.entity, _uiData.foodQuantity)
+                Submit -> insertNewEntry(_uiData)
                 is UpdateDate -> {
                     detailsIntent.newTimeInMilliSec?.let {
 
@@ -118,17 +117,17 @@ class FoodQuantityViewModel @Inject constructor(
         }
     }
 
-    private fun insertNewEntry(foodEntity: FoodEntity, foodQuantity: String) {
+    private fun insertNewEntry(uiData: FoodQuantityData) {
         viewModelScope.launch {
             uiState.emit(Loading)
             entryState.emit(false)
-            val quantity = foodQuantity.toInt()
-            if (foodEntity.singleServingSizeInGm != quantity) {
-                val entity = foodEntity.copy(singleServingSizeInGm = quantity)
-                entity.id = foodEntity.id
-                addEntry(entity)
+            val quantity = uiData.foodQuantity.toInt()
+            if (uiData.entity.singleServingSizeInGm != quantity) {
+                val entity = uiData.entity.copy(singleServingSizeInGm = quantity)
+                entity.id = uiData.entity.id
+                addEntry(entity, uiData.time, uiData.date)
             } else {
-                addEntry(foodEntity)
+                addEntry(uiData.entity, uiData.time, uiData.date)
             }
             entryState.emit(true)
         }

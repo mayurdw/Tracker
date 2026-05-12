@@ -4,55 +4,16 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
-import com.mayurdw.fibretracker.model.domain.EntryData
-import com.mayurdw.fibretracker.model.domain.FoodEntryData
+import com.mayurdw.fibretracker.model.entity.EntityType
 import com.mayurdw.fibretracker.model.entity.EntryEntity
 import com.mayurdw.fibretracker.model.entity.EntryEntityId
 import com.mayurdw.fibretracker.model.entity.FoodEntity
-import com.mayurdw.fibretracker.model.entity.FoodEntryEntity
 import com.mayurdw.fibretracker.model.entity.PoopEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDate
 
 @Dao
 interface AppDao {
-    /**
-     * ENTRY related methods
-     * */
-
-    @Query(
-        "SELECT entry.date AS date, " +
-                "entry.serving AS servingInGms, " +
-                "entry.foodId AS foodId, " +
-                "food.name AS name, " +
-                "entry.id AS id," +
-                "fibre_per_micro_gram AS fibrePerMicroGrams " +
-                "FROM entry, food " +
-                "WHERE entry.foodId = food.id " +
-                "AND entry.date BETWEEN :startTime AND :endTime " +
-                "ORDER BY date DESC"
-    )
-    fun getEntryData(startTime: LocalDate, endTime: LocalDate): Flow<List<FoodEntryData>>
-
-    @Query(
-        "SELECT entry.date AS date, " +
-                "entry.serving AS servingInGms, " +
-                "entry.foodId AS foodId, " +
-                "food.name AS name, " +
-                "entry.id AS id," +
-                "fibre_per_micro_gram AS fibrePerMicroGrams " +
-                "FROM entry, food " +
-                "WHERE entry.foodId = food.id " +
-                "AND entry.id = :entryId"
-    )
-    fun getEntry(entryId: Int): Flow<EntryData>
-
-    @Upsert
-    fun upsertEntry(entryEntity: FoodEntryEntity)
-
-    @Delete
-    suspend fun deleteEntry(foodEntryEntity: FoodEntryEntity)
-
     /**
      * Food related methods
      * */
@@ -81,6 +42,13 @@ interface AppDao {
                 "ORDER BY DATE desc"
     )
     fun getEntries(startDate: LocalDate, endDate: LocalDate): Flow<List<EntryEntity>>
+
+    @Query(
+        "SELECT * from trackingEntry " +
+                "WHERE id LIKE :id " +
+                "AND type LIKE :type"
+    )
+    suspend fun getEntry(type: EntityType, id: Int): EntryEntity
 
     @Delete(entity = EntryEntity::class)
     suspend fun deleteEntry(vararg id: EntryEntityId)

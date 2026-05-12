@@ -2,13 +2,12 @@ package com.mayurdw.fibretracker.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mayurdw.fibretracker.data.helpers.getCurrentTime
 import com.mayurdw.fibretracker.data.usecase.IDeleteEntryUseCase
-import com.mayurdw.fibretracker.data.usecase.IGetEntryUseCase
-import com.mayurdw.fibretracker.data.usecase.IGetFoodUseCase
+import com.mayurdw.fibretracker.data.usecase.IGetFoodEntryUseCase
 import com.mayurdw.fibretracker.data.usecase.IUpdateEntryUseCase
-import com.mayurdw.fibretracker.model.domain.EntryData
-import com.mayurdw.fibretracker.model.entity.FoodEntryEntity
+import com.mayurdw.fibretracker.model.domain.Entry
+import com.mayurdw.fibretracker.model.domain.EntryType.Food
+import com.mayurdw.fibretracker.model.entity.FoodEntity
 import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent
 import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.Delete
 import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.DismissDate
@@ -19,14 +18,11 @@ import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.OpenTime
 import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.Submit
 import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.UpdateDate
 import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.UpdateTime
-import com.mayurdw.fibretracker.viewmodels.UIState.Error
 import com.mayurdw.fibretracker.viewmodels.UIState.Loading
 import com.mayurdw.fibretracker.viewmodels.UIState.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate.Companion.fromEpochDays
 import kotlinx.datetime.LocalTime
@@ -35,62 +31,52 @@ import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class EditFoodEntryViewModel @Inject constructor(
-    private val getEntry: IGetEntryUseCase,
-    private val getFood: IGetFoodUseCase,
+    private val getEntry: IGetFoodEntryUseCase,
     private val updateEntry: IUpdateEntryUseCase,
     private val deleteEntry: IDeleteEntryUseCase
 ) : ViewModel() {
-    // TODO: Modify that EntryData to Entry
     val uiState: StateFlow<UIState<FoodQuantityData>>
         field = MutableStateFlow<UIState<FoodQuantityData>>(Loading)
 
     private lateinit var _uiData: FoodQuantityData
-    private lateinit var entry: EntryData
+    private lateinit var entry: Entry
 
     val saveSuccessful: StateFlow<Boolean>
         field = MutableStateFlow<Boolean>(false)
 
     fun getEntryData(selectedEntryId: Int) {
         viewModelScope.launch {
-            val entry = getEntry(selectedEntryId).firstOrNull()
+            val entry = getEntry(selectedEntryId)
 
-            entry?.let {
-                this@EditFoodEntryViewModel.entry = entry
-                getFood(entry.foodId).collectLatest { food ->
-                    food.getOrNull()?.let {
-                        _uiData = FoodQuantityData(
-                            entity = it,
-                            // TODO: Use entry date and time
-                            date = entry.date,
-                            time = getCurrentTime(),
-                            showDateDialog = false,
-                            showTimeDialog = false,
-                            canDelete = true,
-                            submitEnabled = false,
-                            foodQuantity = entry.servingInGms.toString()
-                        )
+            this@EditFoodEntryViewModel.entry = entry
 
-                        uiState.emit(Success(_uiData))
-                    }
-                } ?: run {
-                    uiState.emit(Error)
-                }
-            } ?: run {
-                uiState.emit(Error)
-            }
+            val info: Food = entry.info as Food
+            _uiData = FoodQuantityData(
+                entity = FoodEntity(
+                    info.name,
+                    info.servingInGms,
+                    info.fibrePerMicroGrams
+                ),
+                date = entry.date,
+                time = entry.time,
+                showDateDialog = false,
+                showTimeDialog = false,
+                canDelete = true,
+                submitEnabled = false,
+                foodQuantity = info.servingInGms.toString()
+            )
         }
     }
 
-    private fun updateEntry(newFoodQuantity: String, entry: EntryData) {
-        if (newFoodQuantity.toInt() != entry.servingInGms) {
-
+    private fun updateEntry(newFoodQuantity: String, entry: Entry) {
+        val info = entry.info as Food
+        if (newFoodQuantity.toInt() != info.servingInGms) {
+            val newInfo = info.copy(servingInGms = newFoodQuantity.toInt())
             viewModelScope.launch {
                 updateEntry(
-                    FoodEntryEntity(
-                        foodId = entry.foodId,
-                        foodServingInGms = newFoodQuantity.toInt(),
-                        date = entry.date
-                    ).apply { id = entry.id }
+                    entry = entry.copy(
+                        info = newInfo
+                    )
                 )
 
                 saveSuccessful.emit(true)
@@ -104,7 +90,7 @@ class EditFoodEntryViewModel @Inject constructor(
             val intValue = newValue?.trim()?.toIntOrNull()
 
             intValue?.let {
-                if (entry.servingInGms != it) {
+                if ((entry.info as Food).servingInGms != it) {
                     _uiData = _uiData.copy(foodQuantity = it.toString())
 
                     uiState.emit(Success(_uiData))
@@ -113,7 +99,7 @@ class EditFoodEntryViewModel @Inject constructor(
         }
     }
 
-    private fun delete(entry: EntryData) {
+    private fun delete(entry: Entry) {
         viewModelScope.launch {
             deleteEntry(entry)
             saveSuccessful.emit(true)
@@ -127,6 +113,7 @@ class EditFoodEntryViewModel @Inject constructor(
                 Delete -> {
                     delete(entry)
                 }
+
                 DismissDate -> {
                     _uiData = _uiData.copy(showDateDialog = false)
                 }
