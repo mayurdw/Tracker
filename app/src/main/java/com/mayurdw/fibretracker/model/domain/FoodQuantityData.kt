@@ -1,4 +1,4 @@
-package com.mayurdw.fibretracker.viewmodels
+package com.mayurdw.fibretracker.model.domain
 
 import com.mayurdw.fibretracker.model.entity.FoodEntity
 import kotlinx.datetime.LocalDate

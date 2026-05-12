@@ -3,23 +3,26 @@ package com.mayurdw.fibretracker.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mayurdw.fibretracker.data.usecase.IDeleteEntryUseCase
-import com.mayurdw.fibretracker.data.usecase.IGetFoodEntryUseCase
+import com.mayurdw.fibretracker.data.usecase.IGetEntryUseCase
 import com.mayurdw.fibretracker.data.usecase.IUpdateEntryUseCase
 import com.mayurdw.fibretracker.model.domain.Entry
 import com.mayurdw.fibretracker.model.domain.EntryType.Food
+import com.mayurdw.fibretracker.model.entity.EntityType.FOOD
 import com.mayurdw.fibretracker.model.entity.FoodEntity
-import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent
-import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.Delete
-import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.DismissDate
-import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.DismissTime
-import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.None
-import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.OpenDate
-import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.OpenTime
-import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.Submit
-import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.UpdateDate
-import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.UpdateTime
-import com.mayurdw.fibretracker.viewmodels.UIState.Loading
-import com.mayurdw.fibretracker.viewmodels.UIState.Success
+import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent
+import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent.Delete
+import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent.DismissDate
+import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent.DismissTime
+import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent.None
+import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent.OpenDate
+import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent.OpenTime
+import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent.Submit
+import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent.UpdateDate
+import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent.UpdateTime
+import com.mayurdw.fibretracker.model.domain.FoodQuantityData
+import com.mayurdw.fibretracker.model.domain.UIState
+import com.mayurdw.fibretracker.model.domain.UIState.Loading
+import com.mayurdw.fibretracker.model.domain.UIState.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,7 +34,7 @@ import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class EditFoodEntryViewModel @Inject constructor(
-    private val getEntry: IGetFoodEntryUseCase,
+    private val getEntry: IGetEntryUseCase,
     private val updateEntry: IUpdateEntryUseCase,
     private val deleteEntry: IDeleteEntryUseCase
 ) : ViewModel() {
@@ -47,7 +50,7 @@ class EditFoodEntryViewModel @Inject constructor(
     fun getEntryData(selectedEntryId: Int) {
         viewModelScope.launch {
             uiState.emit(Loading)
-            val entry = getEntry(selectedEntryId)
+            val entry = getEntry(FOOD, selectedEntryId)
 
             this@EditFoodEntryViewModel.entry = entry
 

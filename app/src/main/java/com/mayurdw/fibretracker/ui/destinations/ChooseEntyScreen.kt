@@ -1,4 +1,4 @@
-package com.mayurdw.fibretracker.ui.screens
+package com.mayurdw.fibretracker.ui.destinations
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,9 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.mayurdw.fibretracker.ui.destinations.AddFoodItem
-import com.mayurdw.fibretracker.ui.destinations.BowelQuality
-import com.mayurdw.fibretracker.ui.destinations.Destinations
 import com.mayurdw.fibretracker.ui.theme.FibreTrackerTheme
 
 

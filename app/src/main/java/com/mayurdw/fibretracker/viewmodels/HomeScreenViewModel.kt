@@ -4,14 +4,15 @@ package com.mayurdw.fibretracker.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mayurdw.fibretracker.data.helpers.getDateToday
+import com.mayurdw.fibretracker.data.helpers.getCurrentDate
 import com.mayurdw.fibretracker.data.helpers.getFormattedDate
 import com.mayurdw.fibretracker.data.usecase.IGetEntriesUseCase
 import com.mayurdw.fibretracker.model.domain.EntryType.Food
 import com.mayurdw.fibretracker.model.domain.HomeData
 import com.mayurdw.fibretracker.model.domain.HomeData.DateData
-import com.mayurdw.fibretracker.viewmodels.UIState.Loading
-import com.mayurdw.fibretracker.viewmodels.UIState.Success
+import com.mayurdw.fibretracker.model.domain.UIState
+import com.mayurdw.fibretracker.model.domain.UIState.Loading
+import com.mayurdw.fibretracker.model.domain.UIState.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,7 +33,7 @@ class HomeScreenViewModel @Inject constructor(
     val homeStateFlow: StateFlow<UIState<HomeData>>
         field = MutableStateFlow<UIState<HomeData>>(Loading)
 
-    var currentDate: LocalDate = getDateToday()
+    var currentDate: LocalDate = getCurrentDate()
     val todaysDate = currentDate
 
     fun getLatestData() {

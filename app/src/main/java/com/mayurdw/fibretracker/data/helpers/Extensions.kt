@@ -16,7 +16,7 @@ fun getDateTimeNow(): LocalDateTime {
     return Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 }
 
-fun getDateToday(): LocalDate {
+fun getCurrentDate(): LocalDate {
     return getDateTimeNow().date
 }
 

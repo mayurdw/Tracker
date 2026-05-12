@@ -1,4 +1,4 @@
-package com.mayurdw.fibretracker.ui.screens
+package com.mayurdw.fibretracker.ui.destinations
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

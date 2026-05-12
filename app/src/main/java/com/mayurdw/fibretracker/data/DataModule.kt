@@ -5,24 +5,22 @@ import androidx.room.Room
 import com.mayurdw.fibretracker.data.database.AppDao
 import com.mayurdw.fibretracker.data.database.AppDatabase
 import com.mayurdw.fibretracker.data.usecase.AddBowelMovementEntryUseCase
-import com.mayurdw.fibretracker.data.usecase.AddEntryUseCase
+import com.mayurdw.fibretracker.data.usecase.AddFoodFoodEntryUseCase
 import com.mayurdw.fibretracker.data.usecase.AddFoodUseCase
 import com.mayurdw.fibretracker.data.usecase.DeleteEntryUseCase
 import com.mayurdw.fibretracker.data.usecase.DeleteFoodUseCase
 import com.mayurdw.fibretracker.data.usecase.GetAllFoodsUseCase
-import com.mayurdw.fibretracker.data.usecase.GetBowelMovementEntryUseCase
 import com.mayurdw.fibretracker.data.usecase.GetEntriesUseCase
-import com.mayurdw.fibretracker.data.usecase.GetFoodEntryUseCase
+import com.mayurdw.fibretracker.data.usecase.GetEntryUseCase
 import com.mayurdw.fibretracker.data.usecase.GetFoodUseCase
 import com.mayurdw.fibretracker.data.usecase.IAddBowelMovementEntryUseCase
-import com.mayurdw.fibretracker.data.usecase.IAddEntryUseCase
+import com.mayurdw.fibretracker.data.usecase.IAddFoodEntryUseCase
 import com.mayurdw.fibretracker.data.usecase.IAddFoodUseCase
 import com.mayurdw.fibretracker.data.usecase.IDeleteEntryUseCase
 import com.mayurdw.fibretracker.data.usecase.IDeleteFoodUseCase
 import com.mayurdw.fibretracker.data.usecase.IGetAllFoodsUseCase
-import com.mayurdw.fibretracker.data.usecase.IGetBowelMovementEntryUseCase
 import com.mayurdw.fibretracker.data.usecase.IGetEntriesUseCase
-import com.mayurdw.fibretracker.data.usecase.IGetFoodEntryUseCase
+import com.mayurdw.fibretracker.data.usecase.IGetEntryUseCase
 import com.mayurdw.fibretracker.data.usecase.IGetFoodUseCase
 import com.mayurdw.fibretracker.data.usecase.IUpdateEntryUseCase
 import com.mayurdw.fibretracker.data.usecase.UpdateEntryUseCase
@@ -71,13 +69,13 @@ abstract class UseCaseModule {
     abstract fun provideFoodUseCase(addFoodUseCase: AddFoodUseCase): IAddFoodUseCase
 
     @Binds
-    abstract fun provideAddEntryUseCase(addEntryUseCase: AddEntryUseCase): IAddEntryUseCase
+    abstract fun provideAddEntryUseCase(addFoodEntryUseCase: AddFoodFoodEntryUseCase): IAddFoodEntryUseCase
 
     @Binds
     abstract fun provideUpdateEntryUseCase(updateEntryUseCase: UpdateEntryUseCase): IUpdateEntryUseCase
 
     @Binds
-    abstract fun provideGetEntryUseCase(getFoodEntryUseCase: GetFoodEntryUseCase): IGetFoodEntryUseCase
+    abstract fun provideGetEntryUseCase(getFoodEntryUseCase: GetEntryUseCase): IGetEntryUseCase
 
     @Binds
     abstract fun provideGetAllFoodsUseCase(getAllFoodsUseCase: GetAllFoodsUseCase): IGetAllFoodsUseCase
@@ -93,9 +91,6 @@ abstract class UseCaseModule {
 
     @Binds
     abstract fun provideAddPoopEntryUseCase(addPoopEntryUseCase: AddBowelMovementEntryUseCase): IAddBowelMovementEntryUseCase
-
-    @Binds
-    abstract fun provideGetPoopEntryUseCase(getPoopEntryUseCase: GetBowelMovementEntryUseCase): IGetBowelMovementEntryUseCase
 
     @Binds
     abstract fun provideGetEntriesUseCase(getEntriesUseCase: GetEntriesUseCase): IGetEntriesUseCase

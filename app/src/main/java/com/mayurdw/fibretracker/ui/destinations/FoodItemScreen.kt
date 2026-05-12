@@ -10,9 +10,9 @@ import com.mayurdw.fibretracker.model.entity.FoodEntity
 import com.mayurdw.fibretracker.ui.screens.AddFoodItemList
 import com.mayurdw.fibretracker.ui.screens.core.LoadingScreen
 import com.mayurdw.fibretracker.viewmodels.AddFoodEntryViewModel
-import com.mayurdw.fibretracker.viewmodels.UIState.Error
-import com.mayurdw.fibretracker.viewmodels.UIState.Loading
-import com.mayurdw.fibretracker.viewmodels.UIState.Success
+import com.mayurdw.fibretracker.model.domain.UIState.Error
+import com.mayurdw.fibretracker.model.domain.UIState.Loading
+import com.mayurdw.fibretracker.model.domain.UIState.Success
 
 
 @Composable

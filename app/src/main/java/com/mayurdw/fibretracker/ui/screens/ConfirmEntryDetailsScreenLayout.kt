@@ -24,14 +24,16 @@ import com.mayurdw.fibretracker.R
 import com.mayurdw.fibretracker.data.helpers.getFormattedDate
 import com.mayurdw.fibretracker.data.helpers.getFormattedTime
 import com.mayurdw.fibretracker.data.helpers.toDateInMilliSecs
-import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.Delete
-import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.DismissDate
-import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.DismissTime
-import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.OpenDate
-import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.OpenTime
-import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.Submit
-import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.UpdateDate
-import com.mayurdw.fibretracker.ui.screens.ConfirmEntryDetailsIntent.UpdateTime
+import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsData
+import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent
+import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent.Delete
+import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent.DismissDate
+import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent.DismissTime
+import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent.OpenDate
+import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent.OpenTime
+import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent.Submit
+import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent.UpdateDate
+import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent.UpdateTime
 import com.mayurdw.fibretracker.ui.screens.core.DateDialog
 import com.mayurdw.fibretracker.ui.screens.core.TimeDialog
 

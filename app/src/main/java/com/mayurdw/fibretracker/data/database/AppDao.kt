@@ -8,7 +8,6 @@ import com.mayurdw.fibretracker.model.entity.EntityType
 import com.mayurdw.fibretracker.model.entity.EntryEntity
 import com.mayurdw.fibretracker.model.entity.EntryEntityId
 import com.mayurdw.fibretracker.model.entity.FoodEntity
-import com.mayurdw.fibretracker.model.entity.PoopEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDate
 
@@ -29,12 +28,9 @@ interface AppDao {
     @Delete
     suspend fun deleteFood(foodEntity: FoodEntity)
 
-
-    @Upsert
-    suspend fun upsertNewPoop(poopEntity: PoopEntity)
-
-    @Query("SELECT * from poop WHERE poop.date BETWEEN :startDate AND :endDate")
-    fun getPoopEntries(startDate: LocalDate, endDate: LocalDate): Flow<List<PoopEntity>>
+    /**
+     * Entry Related Info
+     * */
 
     @Query(
         "SELECT * from trackingEntry " +

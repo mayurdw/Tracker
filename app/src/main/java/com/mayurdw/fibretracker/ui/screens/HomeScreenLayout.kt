@@ -28,8 +28,8 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.mayurdw.fibretracker.R
+import com.mayurdw.fibretracker.data.helpers.getCurrentDate
 import com.mayurdw.fibretracker.data.helpers.getCurrentTime
-import com.mayurdw.fibretracker.data.helpers.getDateToday
 import com.mayurdw.fibretracker.data.helpers.getFormattedTime
 import com.mayurdw.fibretracker.model.domain.BowelType
 import com.mayurdw.fibretracker.model.domain.Entry
@@ -283,7 +283,7 @@ internal class HomeScreenPreviewProvider : PreviewParameterProvider<HomeData> {
                     Entry(
                         id = 1,
                         time = getCurrentTime(),
-                        date = getDateToday(),
+                        date = getCurrentDate(),
                         info = Food(
                             name = "Chia",
                             servingInGms = 28,
@@ -293,7 +293,7 @@ internal class HomeScreenPreviewProvider : PreviewParameterProvider<HomeData> {
                     Entry(
                         id = 2,
                         time = getCurrentTime(),
-                        date = getDateToday(),
+                        date = getCurrentDate(),
                         info = Bowel(
                             quality = BowelType.TYPE_3
                         )

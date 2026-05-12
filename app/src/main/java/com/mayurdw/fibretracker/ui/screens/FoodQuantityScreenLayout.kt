@@ -24,11 +24,13 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.mayurdw.fibretracker.R
+import com.mayurdw.fibretracker.data.helpers.getCurrentDate
 import com.mayurdw.fibretracker.data.helpers.getCurrentTime
-import com.mayurdw.fibretracker.data.helpers.getDateToday
+import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsData
+import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent
 import com.mayurdw.fibretracker.model.entity.FoodEntity
 import com.mayurdw.fibretracker.ui.theme.FibreTrackerTheme
-import com.mayurdw.fibretracker.viewmodels.FoodQuantityData
+import com.mayurdw.fibretracker.model.domain.FoodQuantityData
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -161,7 +163,7 @@ private fun FoodQuantityScreenPreview(
                     fibrePerMicroGram = 1_000_00
                 ),
                 time = getCurrentTime(),
-                date = getDateToday(),
+                date = getCurrentDate(),
                 showDateDialog = false,
                 showTimeDialog = false,
                 submitEnabled = false,

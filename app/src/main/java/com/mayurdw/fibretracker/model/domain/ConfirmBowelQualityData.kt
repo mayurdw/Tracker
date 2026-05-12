@@ -1,6 +1,5 @@
-package com.mayurdw.fibretracker.viewmodels
+package com.mayurdw.fibretracker.model.domain
 
-import com.mayurdw.fibretracker.model.domain.BowelType
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 

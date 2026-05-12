@@ -9,8 +9,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -19,56 +17,15 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mayurdw.fibretracker.R
+import com.mayurdw.fibretracker.data.helpers.getCurrentDate
 import com.mayurdw.fibretracker.data.helpers.getCurrentTime
-import com.mayurdw.fibretracker.data.helpers.getDateToday
-import com.mayurdw.fibretracker.model.domain.BowelType
 import com.mayurdw.fibretracker.model.domain.BowelType.TYPE_4
-import com.mayurdw.fibretracker.ui.screens.core.LoadingScreen
+import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsData
+import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent
 import com.mayurdw.fibretracker.ui.theme.FibreTrackerTheme
-import com.mayurdw.fibretracker.viewmodels.ConfirmBowelQualityData
-import com.mayurdw.fibretracker.viewmodels.ConfirmBowelQualityViewModel
-import com.mayurdw.fibretracker.viewmodels.ConfirmBowelQualityIntents.HandleNewType
-import com.mayurdw.fibretracker.viewmodels.UIState.Loading
-import com.mayurdw.fibretracker.viewmodels.UIState.Success
+import com.mayurdw.fibretracker.model.domain.ConfirmBowelQualityData
 
-@Composable
-fun ConfirmBowelQualityScreen(
-    type: BowelType,
-    viewModel: ConfirmBowelQualityViewModel = hiltViewModel(),
-    onTypeClicked: () -> Unit,
-    onSaveSuccessful: () -> Unit,
-) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val saveSuccessful by viewModel.submissionSuccessful.collectAsStateWithLifecycle()
-
-    LaunchedEffect(Unit) {
-        viewModel.handleIntent(HandleNewType(type))
-    }
-
-    if (saveSuccessful) {
-        onSaveSuccessful()
-    }
-
-    when (uiState) {
-        is Loading -> LoadingScreen()
-        is Success -> {
-            val poopData: ConfirmBowelQualityData =
-                (uiState as Success<*>).data as ConfirmBowelQualityData
-
-            ConfirmBowelQualityScreenLayout(
-                uiData = poopData,
-                onTypeClicked = onTypeClicked,
-                onUserEvent = { viewModel.onUserEvent(it) }
-            )
-        }
-
-        else -> {}
-    }
-
-}
 
 @Composable
 fun ConfirmBowelQualityScreenLayout(
@@ -124,21 +81,21 @@ class ConfirmBowelQualityProvider : PreviewParameterProvider<ConfirmBowelQuality
     override val values: Sequence<ConfirmBowelQualityData> = sequenceOf(
         ConfirmBowelQualityData(
             type = TYPE_4,
-            date = getDateToday(),
+            date = getCurrentDate(),
             time = getCurrentTime(),
             showTimeDialog = false,
             showDateDialog = false,
         ),
         ConfirmBowelQualityData(
             type = TYPE_4,
-            date = getDateToday(),
+            date = getCurrentDate(),
             time = getCurrentTime(),
             showTimeDialog = true,
             showDateDialog = false,
         ),
         ConfirmBowelQualityData(
             type = TYPE_4,
-            date = getDateToday(),
+            date = getCurrentDate(),
             time = getCurrentTime(),
             showTimeDialog = false,
             showDateDialog = true,

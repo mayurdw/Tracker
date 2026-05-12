@@ -12,7 +12,7 @@ import com.mayurdw.fibretracker.model.entity.FoodEntity
 import com.mayurdw.fibretracker.ui.screens.AddNewFoodScreenLayout
 import com.mayurdw.fibretracker.ui.screens.core.LoadingScreen
 import com.mayurdw.fibretracker.viewmodels.AddNewFoodViewModel
-import com.mayurdw.fibretracker.viewmodels.UIState
+import com.mayurdw.fibretracker.model.domain.UIState
 
 @Composable
 fun AddNewFoodScreen(

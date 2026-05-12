@@ -7,6 +7,7 @@ import com.mayurdw.fibretracker.data.usecase.IAddFoodUseCase
 import com.mayurdw.fibretracker.data.usecase.IDeleteFoodUseCase
 import com.mayurdw.fibretracker.data.usecase.IGetFoodUseCase
 import com.mayurdw.fibretracker.model.domain.CommonFoods
+import com.mayurdw.fibretracker.model.domain.UIState
 import com.mayurdw.fibretracker.model.entity.FoodEntity
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery

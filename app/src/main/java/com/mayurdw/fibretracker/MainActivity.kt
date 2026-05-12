@@ -36,11 +36,11 @@ import com.mayurdw.fibretracker.ui.destinations.SelectFoodToEdit
 import com.mayurdw.fibretracker.ui.destinations.Setting
 import com.mayurdw.fibretracker.ui.destinations.SettingsScreen
 import com.mayurdw.fibretracker.ui.destinations.getDestination
-import com.mayurdw.fibretracker.ui.screens.ChooseEntryScreen
-import com.mayurdw.fibretracker.ui.screens.ConfirmBowelQualityScreen
-import com.mayurdw.fibretracker.ui.screens.EditMenuScreen
+import com.mayurdw.fibretracker.ui.destinations.ChooseEntryScreen
+import com.mayurdw.fibretracker.ui.destinations.ConfirmBowelQualityScreen
+import com.mayurdw.fibretracker.ui.destinations.EditMenuScreen
 import com.mayurdw.fibretracker.ui.screens.FibreTrackerTopBar
-import com.mayurdw.fibretracker.ui.screens.PoopQualityScreen
+import com.mayurdw.fibretracker.ui.destinations.PoopQualityScreen
 import com.mayurdw.fibretracker.ui.screens.core.BottomBar
 import com.mayurdw.fibretracker.ui.theme.FibreTrackerTheme
 import dagger.hilt.android.AndroidEntryPoint

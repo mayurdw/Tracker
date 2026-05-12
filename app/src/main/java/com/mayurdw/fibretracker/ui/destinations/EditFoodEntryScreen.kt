@@ -9,10 +9,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mayurdw.fibretracker.ui.screens.FoodQuantityScreenLayout
 import com.mayurdw.fibretracker.ui.screens.core.LoadingScreen
 import com.mayurdw.fibretracker.viewmodels.EditFoodEntryViewModel
-import com.mayurdw.fibretracker.viewmodels.FoodQuantityData
-import com.mayurdw.fibretracker.viewmodels.UIState.Error
-import com.mayurdw.fibretracker.viewmodels.UIState.Loading
-import com.mayurdw.fibretracker.viewmodels.UIState.Success
+import com.mayurdw.fibretracker.model.domain.FoodQuantityData
+import com.mayurdw.fibretracker.model.domain.UIState.Error
+import com.mayurdw.fibretracker.model.domain.UIState.Loading
+import com.mayurdw.fibretracker.model.domain.UIState.Success
 
 @Composable
 fun EditFoodEntryScreen(

@@ -1,4 +1,4 @@
-package com.mayurdw.fibretracker.ui.screens
+package com.mayurdw.fibretracker.model.domain
 
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime

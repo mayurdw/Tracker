@@ -8,7 +8,6 @@ import com.mayurdw.fibretracker.TestDispatcherRule
 import com.mayurdw.fibretracker.data.database.AppDao
 import com.mayurdw.fibretracker.data.database.AppDatabase
 import com.mayurdw.fibretracker.data.helpers.getCurrentTime
-import com.mayurdw.fibretracker.data.helpers.getDateToday
 import com.mayurdw.fibretracker.model.entity.EntityType
 import com.mayurdw.fibretracker.model.entity.EntityType.FOOD
 import com.mayurdw.fibretracker.model.entity.EntryEntity
@@ -113,63 +112,68 @@ class AppDatabaseTest {
 
     @Test
     fun getEntriesWhenNoneExist() = runTest {
-        dao.getEntries(getCurrentDate(), getCurrentDate()).test {
-            assertTrue(awaitItem().isEmpty())
-        }
+        dao.getEntries(this@AppDatabaseTest.getCurrentDate(), this@AppDatabaseTest.getCurrentDate())
+            .test {
+                assertTrue(awaitItem().isEmpty())
+            }
     }
 
     @Test
     fun getEntriesWhenEntriesOlder() = runTest {
         val entry = EntryEntity(
-            date = getCurrentDate().minus(1, DAY),
+            date = this@AppDatabaseTest.getCurrentDate().minus(1, DAY),
             time = getCurrentTime(),
             type = EntityType.BOWEL_MOVEMENT
         )
 
         dao.upsertEntry(entry)
 
-        dao.getEntries(getCurrentDate(), getCurrentDate()).test {
-            assertTrue(awaitItem().isEmpty())
-        }
+        dao.getEntries(this@AppDatabaseTest.getCurrentDate(), this@AppDatabaseTest.getCurrentDate())
+            .test {
+                assertTrue(awaitItem().isEmpty())
+            }
     }
 
     @Test
     fun getEntriesTest() = runTest {
         val entry = EntryEntity(
-            date = getCurrentDate(),
+            date = this@AppDatabaseTest.getCurrentDate(),
             time = getCurrentTime(),
             type = FOOD
         )
 
         dao.upsertEntry(entry)
 
-        dao.getEntries(getCurrentDate(), getCurrentDate()).test {
-            assertEquals(1, awaitItem().size)
-        }
+        dao.getEntries(this@AppDatabaseTest.getCurrentDate(), this@AppDatabaseTest.getCurrentDate())
+            .test {
+                assertEquals(1, awaitItem().size)
+            }
     }
 
     @Test
     fun deleteEntryById() = runTest {
         val mockEntry = EntryEntity(
-            date = getCurrentDate(),
+            date = this@AppDatabaseTest.getCurrentDate(),
             time = getCurrentTime(),
             type = FOOD
         ).apply { id = 1 }
 
         dao.upsertEntry(mockEntry)
 
-        dao.getEntries(getCurrentDate(), getCurrentDate()).test {
-            val item = awaitItem()
-            assertEquals(1, item.size)
-            assertEquals(mockEntry.id, item[0].id)
-        }
+        dao.getEntries(this@AppDatabaseTest.getCurrentDate(), this@AppDatabaseTest.getCurrentDate())
+            .test {
+                val item = awaitItem()
+                assertEquals(1, item.size)
+                assertEquals(mockEntry.id, item[0].id)
+            }
 
         dao.deleteEntry(EntryEntityId(mockEntry.id))
 
-        dao.getEntries(getCurrentDate(), getCurrentDate()).test {
-            assertTrue(awaitItem().isEmpty())
-        }
+        dao.getEntries(this@AppDatabaseTest.getCurrentDate(), this@AppDatabaseTest.getCurrentDate())
+            .test {
+                assertTrue(awaitItem().isEmpty())
+            }
     }
 
-    fun getCurrentDate(): LocalDate = getDateToday()
+    fun getCurrentDate(): LocalDate = com.mayurdw.fibretracker.data.helpers.getCurrentDate()
 }

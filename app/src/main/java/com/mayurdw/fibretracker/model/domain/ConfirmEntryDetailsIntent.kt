@@ -1,4 +1,4 @@
-package com.mayurdw.fibretracker.ui.screens
+package com.mayurdw.fibretracker.model.domain
 
 sealed interface ConfirmEntryDetailsIntent {
     data object None: ConfirmEntryDetailsIntent

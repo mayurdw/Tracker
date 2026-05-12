@@ -1,4 +1,4 @@
-package com.mayurdw.fibretracker.viewmodels
+package com.mayurdw.fibretracker.model.domain
 
 sealed interface UIState<out T> {
     data object Error : UIState<Nothing>

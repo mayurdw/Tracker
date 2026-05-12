@@ -3,7 +3,7 @@ package com.mayurdw.fibretracker.data.usecase
 import app.cash.turbine.test
 import com.mayurdw.fibretracker.TestDispatcherRule
 import com.mayurdw.fibretracker.data.database.AppDao
-import com.mayurdw.fibretracker.data.helpers.getDateToday
+import com.mayurdw.fibretracker.data.helpers.getCurrentDate
 import com.mayurdw.fibretracker.model.domain.BowelType.TYPE_3
 import com.mayurdw.fibretracker.model.domain.EntryType.Bowel
 import com.mayurdw.fibretracker.model.domain.EntryType.Food
@@ -53,7 +53,7 @@ class GetEntriesUseCaseTest {
             )
         } returns flow { emit(emptyList()) }
 
-        useCase(getDateToday(), getDateToday()).test {
+        useCase(getCurrentDate(), getCurrentDate()).test {
             assertTrue(awaitItem().isEmpty())
             awaitComplete()
         }
@@ -80,7 +80,7 @@ class GetEntriesUseCaseTest {
             dao.getFoodById(any())
         } returns foodEntity
 
-        useCase(getDateToday(), getDateToday()).test {
+        useCase(getCurrentDate(), getCurrentDate()).test {
             val entries = awaitItem()
 
             assertTrue(entries.isNotEmpty())
@@ -114,7 +114,7 @@ class GetEntriesUseCaseTest {
             dao.getFoodById(any())
         } returns foodEntity
 
-        useCase(getDateToday(), getDateToday()).test {
+        useCase(getCurrentDate(), getCurrentDate()).test {
             val entries = awaitItem()
 
             assertTrue(entries.isNotEmpty())
@@ -146,7 +146,7 @@ class GetEntriesUseCaseTest {
             dao.getFoodById(any())
         } returns null
 
-        useCase(getDateToday(), getDateToday()).test {
+        useCase(getCurrentDate(), getCurrentDate()).test {
             assertTrue(awaitError() is NullPointerException)
         }
     }
