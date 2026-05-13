@@ -42,7 +42,7 @@ fun ConfirmBowelQualityScreenLayout(
             date = uiData.date,
             showDateDialog = uiData.showDateDialog,
             showTimeDialog = uiData.showTimeDialog,
-            canDelete = false,
+            canDelete = uiData.canDelete,
             submitEnabled = true,
         ),
         entryDetailsLayout = {
