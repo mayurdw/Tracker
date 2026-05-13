@@ -20,6 +20,7 @@ datetime = "0.7.1"
 mockk = "1.14.9"
 robolectric = "4.16.1"
 foundation = "1.11.0"
+charts = "0.2.5"
 
 [libraries]
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
@@ -52,6 +53,7 @@ datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
+charts = { group = "io.github.ehsannarmani", name = "compose-charts", version.ref = "charts" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

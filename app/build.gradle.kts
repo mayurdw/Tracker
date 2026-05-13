@@ -83,6 +83,7 @@ dependencies {
     implementation(libs.hilt.navigation)
     implementation(libs.datetime)
     implementation(libs.androidx.compose.material.icons.extended)
+    implementation(libs.charts)
 
     testImplementation(libs.junit)
     testImplementation(libs.androidx.room.test)
