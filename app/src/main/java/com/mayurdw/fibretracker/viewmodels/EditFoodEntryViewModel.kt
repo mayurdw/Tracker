@@ -94,21 +94,50 @@ class EditFoodEntryViewModel @Inject constructor(
         }
     }
 
-    private fun updateEntry(newFoodQuantity: String, entry: Entry) {
-        val info = entry.info as Food
-        if (newFoodQuantity.toInt() != info.servingInGms) {
-            val newInfo = info.copy(servingInGms = newFoodQuantity.toInt())
-            viewModelScope.launch {
-                updateEntry(
-                    entry = entry.copy(
-                        info = newInfo
-                    )
-                )
+    private fun updateEntry(newData: ConfirmData, entry: Entry) {
 
-                saveSuccessful.emit(true)
+        when (newData.type) {
+            is ConfirmDataType.Food -> {
+                val newFoodQuantity = newData.type.foodQuantity
+                val info = entry.info as Food
+                if (newFoodQuantity.toInt() != info.servingInGms || newData.time != entry.time || newData.date != entry.date) {
+                    val newInfo = info.copy(servingInGms = newFoodQuantity.toInt())
+                    viewModelScope.launch {
+                        updateEntry(
+                            entry = entry.copy(
+                                time = newData.time,
+                                date = newData.date,
+                                info = newInfo
+                            )
+                        )
+
+                        saveSuccessful.emit(true)
+                    }
+
+                }
             }
 
+            is ConfirmDataType.Bowel -> {
+                val info = entry.info as Bowel
+
+                if (newData.type.type != info.quality || newData.time != entry.time || newData.date != entry.time) {
+                    val newInfo = info.copy(quality = newData.type.type)
+
+                    viewModelScope.launch {
+                        updateEntry(
+                            entry = entry.copy(
+                                time = newData.time,
+                                date = newData.date,
+                                info = newInfo
+                            )
+                        )
+
+                        saveSuccessful.emit(true)
+                    }
+                }
+            }
         }
+
     }
 
     fun isEdited(newValue: String?) {
@@ -160,7 +189,7 @@ class EditFoodEntryViewModel @Inject constructor(
 
                 Submit -> {
                     updateEntry(
-                        (_uiData.type as ConfirmDataType.Food).foodQuantity,
+                        _uiData,
                         entry
                     )
                 }
