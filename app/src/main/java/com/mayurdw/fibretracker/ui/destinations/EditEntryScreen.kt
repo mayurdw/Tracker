@@ -6,10 +6,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.mayurdw.fibretracker.model.domain.FoodQuantityData
+import com.mayurdw.fibretracker.model.domain.ConfirmData
+import com.mayurdw.fibretracker.model.domain.ConfirmDataType
 import com.mayurdw.fibretracker.model.domain.UIState.Error
 import com.mayurdw.fibretracker.model.domain.UIState.Loading
 import com.mayurdw.fibretracker.model.domain.UIState.Success
+import com.mayurdw.fibretracker.ui.screens.ConfirmBowelQualityScreenLayout
 import com.mayurdw.fibretracker.ui.screens.FoodQuantityScreenLayout
 import com.mayurdw.fibretracker.ui.screens.core.LoadingScreen
 import com.mayurdw.fibretracker.viewmodels.EditFoodEntryViewModel
@@ -19,7 +21,6 @@ fun EditEntryScreen(
     modifier: Modifier = Modifier,
     selectedFoodId: Int,
     viewModel: EditFoodEntryViewModel = hiltViewModel<EditFoodEntryViewModel>(),
-    onTypeSelected: () -> Unit,
     saveSuccessful: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -40,14 +41,27 @@ fun EditEntryScreen(
         }
 
         is Success<*> -> {
-            val entry = (state as Success<FoodQuantityData>).data
+            val entry = (state as Success<ConfirmData>).data
 
-            FoodQuantityScreenLayout(
-                modifier = modifier,
-                quantityUpdated = { viewModel.isEdited(it) },
-                uiData = entry,
-            ) { detailsIntent ->
-                viewModel.onUserEvent(detailsIntent)
+            when (entry.type) {
+                is ConfirmDataType.Food -> {
+                    FoodQuantityScreenLayout(
+                        modifier = modifier,
+                        quantityUpdated = { viewModel.isEdited(it) },
+                        uiData = entry,
+                    ) { detailsIntent ->
+                        viewModel.onUserEvent(detailsIntent)
+                    }
+                }
+
+                is ConfirmDataType.Bowel -> {
+                    ConfirmBowelQualityScreenLayout(
+                        uiData = entry,
+                        onTypeClicked = {}
+                    ) {
+                        viewModel.onUserEvent(it)
+                    }
+                }
             }
 
         }

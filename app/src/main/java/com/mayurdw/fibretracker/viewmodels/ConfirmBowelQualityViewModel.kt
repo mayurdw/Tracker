@@ -5,8 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.mayurdw.fibretracker.data.helpers.getDateTimeNow
 import com.mayurdw.fibretracker.data.usecase.IAddBowelMovementEntryUseCase
 import com.mayurdw.fibretracker.model.domain.BowelType
-import com.mayurdw.fibretracker.model.domain.ConfirmBowelQualityData
 import com.mayurdw.fibretracker.model.domain.ConfirmBowelQualityIntents
+import com.mayurdw.fibretracker.model.domain.ConfirmBowelQualityIntents.HandleNewType
+import com.mayurdw.fibretracker.model.domain.ConfirmData
+import com.mayurdw.fibretracker.model.domain.ConfirmDataType.Bowel
 import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent
 import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent.Delete
 import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent.DismissDate
@@ -17,7 +19,6 @@ import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent.OpenTime
 import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent.Submit
 import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent.UpdateDate
 import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent.UpdateTime
-import com.mayurdw.fibretracker.model.domain.ConfirmBowelQualityIntents.HandleNewType
 import com.mayurdw.fibretracker.model.domain.UIState
 import com.mayurdw.fibretracker.model.domain.UIState.Loading
 import com.mayurdw.fibretracker.model.domain.UIState.Success
@@ -35,12 +36,12 @@ import kotlin.time.Duration.Companion.milliseconds
 class ConfirmBowelQualityViewModel @Inject constructor(
     private val addBowel: IAddBowelMovementEntryUseCase
 ) : ViewModel() {
-    val uiState: StateFlow<UIState<ConfirmBowelQualityData>>
-        field = MutableStateFlow<UIState<ConfirmBowelQualityData>>(Loading)
+    val uiState: StateFlow<UIState<ConfirmData>>
+        field = MutableStateFlow<UIState<ConfirmData>>(Loading)
     val submissionSuccessful: StateFlow<Boolean>
         field = MutableStateFlow<Boolean>(false)
 
-    private lateinit var uiData: ConfirmBowelQualityData
+    private lateinit var uiData: ConfirmData
 
     fun handleIntent(qualityIntents: ConfirmBowelQualityIntents) {
         when (qualityIntents) {
@@ -58,12 +59,14 @@ class ConfirmBowelQualityViewModel @Inject constructor(
 
         val instance = getDateTimeNow()
 
-        uiData = ConfirmBowelQualityData(
-            type = type,
+        uiData = ConfirmData(
+            type = Bowel(type),
             time = instance.time,
             date = instance.date,
             showTimeDialog = false,
             showDateDialog = false,
+            canDelete = false,
+            submitEnabled = true
         )
     }
 
@@ -93,7 +96,7 @@ class ConfirmBowelQualityViewModel @Inject constructor(
                     addBowel(
                         time = uiData.time,
                         date = uiData.date,
-                        bowelType = uiData.type
+                        bowelType = (uiData.type as Bowel).type
                     )
                     submissionSuccessful.value = true
                 }

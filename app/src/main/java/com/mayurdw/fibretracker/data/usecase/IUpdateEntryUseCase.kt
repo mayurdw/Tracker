@@ -4,8 +4,6 @@ import com.mayurdw.fibretracker.data.database.AppDao
 import com.mayurdw.fibretracker.model.domain.Entry
 import com.mayurdw.fibretracker.model.domain.EntryType.Bowel
 import com.mayurdw.fibretracker.model.domain.EntryType.Food
-import com.mayurdw.fibretracker.model.entity.EntityType.BOWEL_MOVEMENT
-import com.mayurdw.fibretracker.model.entity.EntityType.FOOD
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -21,10 +19,6 @@ class UpdateEntryUseCase @Inject constructor(
     override suspend fun invoke(entry: Entry) {
         withContext(dispatcher) {
             val entryEntity = entryDao.getEntry(
-                type = when (entry.info) {
-                    is Food -> FOOD
-                    is Bowel -> BOWEL_MOVEMENT
-                },
                 id = entry.id
             )
 

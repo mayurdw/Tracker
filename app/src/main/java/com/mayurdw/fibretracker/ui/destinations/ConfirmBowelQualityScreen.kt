@@ -6,13 +6,13 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mayurdw.fibretracker.model.domain.BowelType
-import com.mayurdw.fibretracker.ui.screens.ConfirmBowelQualityScreenLayout
-import com.mayurdw.fibretracker.ui.screens.core.LoadingScreen
-import com.mayurdw.fibretracker.model.domain.ConfirmBowelQualityData
 import com.mayurdw.fibretracker.model.domain.ConfirmBowelQualityIntents.HandleNewType
-import com.mayurdw.fibretracker.viewmodels.ConfirmBowelQualityViewModel
+import com.mayurdw.fibretracker.model.domain.ConfirmData
 import com.mayurdw.fibretracker.model.domain.UIState.Loading
 import com.mayurdw.fibretracker.model.domain.UIState.Success
+import com.mayurdw.fibretracker.ui.screens.ConfirmBowelQualityScreenLayout
+import com.mayurdw.fibretracker.ui.screens.core.LoadingScreen
+import com.mayurdw.fibretracker.viewmodels.ConfirmBowelQualityViewModel
 
 @Composable
 fun ConfirmBowelQualityScreen(
@@ -35,8 +35,8 @@ fun ConfirmBowelQualityScreen(
     when (uiState) {
         is Loading -> LoadingScreen()
         is Success -> {
-            val poopData: ConfirmBowelQualityData =
-                (uiState as Success<*>).data as ConfirmBowelQualityData
+            val poopData: ConfirmData =
+                (uiState as Success<*>).data as ConfirmData
 
             ConfirmBowelQualityScreenLayout(
                 uiData = poopData,

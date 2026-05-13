@@ -21,15 +21,16 @@ import com.mayurdw.fibretracker.R
 import com.mayurdw.fibretracker.data.helpers.getCurrentDate
 import com.mayurdw.fibretracker.data.helpers.getCurrentTime
 import com.mayurdw.fibretracker.model.domain.BowelType.TYPE_4
+import com.mayurdw.fibretracker.model.domain.ConfirmData
+import com.mayurdw.fibretracker.model.domain.ConfirmDataType.Bowel
 import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsData
 import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent
 import com.mayurdw.fibretracker.ui.theme.FibreTrackerTheme
-import com.mayurdw.fibretracker.model.domain.ConfirmBowelQualityData
 
 
 @Composable
 fun ConfirmBowelQualityScreenLayout(
-    uiData: ConfirmBowelQualityData,
+    uiData: ConfirmData,
     onTypeClicked: () -> Unit,
     onUserEvent: (detailsIntent: ConfirmEntryDetailsIntent) -> Unit,
 ) {
@@ -63,7 +64,7 @@ fun ConfirmBowelQualityScreenLayout(
                     Text(
                         modifier = Modifier
                             .padding(8.dp),
-                        text = uiData.type.title,
+                        text = (uiData.type as Bowel).type.title,
                         textAlign = TextAlign.Center
                     )
                 }
@@ -77,28 +78,34 @@ fun ConfirmBowelQualityScreenLayout(
 }
 
 
-class ConfirmBowelQualityProvider : PreviewParameterProvider<ConfirmBowelQualityData> {
-    override val values: Sequence<ConfirmBowelQualityData> = sequenceOf(
-        ConfirmBowelQualityData(
-            type = TYPE_4,
+class ConfirmBowelQualityProvider : PreviewParameterProvider<ConfirmData> {
+    override val values: Sequence<ConfirmData> = sequenceOf(
+        ConfirmData(
+            type = Bowel(TYPE_4),
             date = getCurrentDate(),
             time = getCurrentTime(),
             showTimeDialog = false,
             showDateDialog = false,
+            canDelete = false,
+            submitEnabled = true
         ),
-        ConfirmBowelQualityData(
-            type = TYPE_4,
+        ConfirmData(
+            type = Bowel(TYPE_4),
             date = getCurrentDate(),
             time = getCurrentTime(),
             showTimeDialog = true,
             showDateDialog = false,
+            canDelete = false,
+            submitEnabled = true
         ),
-        ConfirmBowelQualityData(
-            type = TYPE_4,
+        ConfirmData(
+            type = Bowel(TYPE_4),
             date = getCurrentDate(),
             time = getCurrentTime(),
             showTimeDialog = false,
             showDateDialog = true,
+            canDelete = false,
+            submitEnabled = true
         )
     )
 
@@ -108,7 +115,7 @@ class ConfirmBowelQualityProvider : PreviewParameterProvider<ConfirmBowelQuality
 @PreviewLightDark
 @Composable
 private fun PreviewConfirmBowelQualityScreen(
-    @PreviewParameter(ConfirmBowelQualityProvider::class) uiData: ConfirmBowelQualityData
+    @PreviewParameter(ConfirmBowelQualityProvider::class) uiData: ConfirmData
 ) {
     FibreTrackerTheme {
         ConfirmBowelQualityScreenLayout(

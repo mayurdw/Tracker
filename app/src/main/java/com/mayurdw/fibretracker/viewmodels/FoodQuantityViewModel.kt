@@ -6,6 +6,8 @@ import com.mayurdw.fibretracker.data.helpers.getCurrentDate
 import com.mayurdw.fibretracker.data.helpers.getCurrentTime
 import com.mayurdw.fibretracker.data.usecase.IAddFoodEntryUseCase
 import com.mayurdw.fibretracker.data.usecase.IGetFoodUseCase
+import com.mayurdw.fibretracker.model.domain.ConfirmData
+import com.mayurdw.fibretracker.model.domain.ConfirmDataType.Food
 import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent
 import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent.Delete
 import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent.DismissDate
@@ -16,7 +18,6 @@ import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent.OpenTime
 import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent.Submit
 import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent.UpdateDate
 import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent.UpdateTime
-import com.mayurdw.fibretracker.model.domain.FoodQuantityData
 import com.mayurdw.fibretracker.model.domain.UIState
 import com.mayurdw.fibretracker.model.domain.UIState.Error
 import com.mayurdw.fibretracker.model.domain.UIState.Loading
@@ -36,9 +37,9 @@ class FoodQuantityViewModel @Inject constructor(
     private val getFood: IGetFoodUseCase,
     private val addEntry: IAddFoodEntryUseCase
 ) : ViewModel() {
-    val uiState: StateFlow<UIState<FoodQuantityData>>
-        field = MutableStateFlow<UIState<FoodQuantityData>>(Loading)
-    private lateinit var _uiData: FoodQuantityData
+    val uiState: StateFlow<UIState<ConfirmData>>
+        field = MutableStateFlow<UIState<ConfirmData>>(Loading)
+    private lateinit var _uiData: ConfirmData
 
     val entryState: StateFlow<Boolean>
         field = MutableStateFlow<Boolean>(false)
@@ -48,14 +49,16 @@ class FoodQuantityViewModel @Inject constructor(
             uiState.emit(Loading)
             getFood(id).collectLatest {
                 if (it.isSuccess) {
-                    _uiData = FoodQuantityData(
-                        it.getOrNull()!!,
+                    _uiData = ConfirmData(
                         time = getCurrentTime(),
                         date = getCurrentDate(),
-                        showDateDialog = false,
                         showTimeDialog = false,
+                        showDateDialog = false,
+                        canDelete = false,
                         submitEnabled = false,
-                        canDelete = false
+                        type = Food(
+                            entity = it.getOrNull()!!
+                        )
                     )
                     uiState.emit(Success(_uiData))
                 } else {
@@ -69,7 +72,7 @@ class FoodQuantityViewModel @Inject constructor(
         viewModelScope.launch {
             _uiData = _uiData.copy(
                 submitEnabled = !newValue.isNullOrBlank(),
-                foodQuantity = newValue.orEmpty()
+                type = (_uiData.type as Food).copy(foodQuantity = newValue.orEmpty()),
             )
 
             uiState.emit(Success(_uiData))
@@ -121,17 +124,19 @@ class FoodQuantityViewModel @Inject constructor(
         }
     }
 
-    private fun insertNewEntry(uiData: FoodQuantityData) {
+    private fun insertNewEntry(uiData: ConfirmData) {
         viewModelScope.launch {
             uiState.emit(Loading)
             entryState.emit(false)
-            val quantity = uiData.foodQuantity.toInt()
-            if (uiData.entity.singleServingSizeInGm != quantity) {
-                val entity = uiData.entity.copy(singleServingSizeInGm = quantity)
-                entity.id = uiData.entity.id
+
+            val quantity = (uiData.type as Food).foodQuantity.toInt()
+
+            if (uiData.type.entity.singleServingSizeInGm != quantity) {
+                val entity = uiData.type.entity.copy(singleServingSizeInGm = quantity)
+                entity.id = uiData.type.entity.id
                 addEntry(entity, uiData.time, uiData.date)
             } else {
-                addEntry(uiData.entity, uiData.time, uiData.date)
+                addEntry(uiData.type.entity, uiData.time, uiData.date)
             }
             entryState.emit(true)
         }

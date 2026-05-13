@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
-import com.mayurdw.fibretracker.model.entity.EntityType
 import com.mayurdw.fibretracker.model.entity.EntryEntity
 import com.mayurdw.fibretracker.model.entity.EntryEntityId
 import com.mayurdw.fibretracker.model.entity.FoodEntity
@@ -41,10 +40,9 @@ interface AppDao {
 
     @Query(
         "SELECT * from trackingEntry " +
-                "WHERE id LIKE :id " +
-                "AND type LIKE :type"
+                "WHERE id LIKE :id "
     )
-    suspend fun getEntry(type: EntityType, id: Int): EntryEntity
+    suspend fun getEntry(id: Int): EntryEntity
 
     @Delete(entity = EntryEntity::class)
     suspend fun deleteEntry(vararg id: EntryEntityId)

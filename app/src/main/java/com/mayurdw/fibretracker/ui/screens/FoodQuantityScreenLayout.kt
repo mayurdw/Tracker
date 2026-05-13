@@ -26,6 +26,9 @@ import androidx.compose.ui.unit.dp
 import com.mayurdw.fibretracker.R
 import com.mayurdw.fibretracker.data.helpers.getCurrentDate
 import com.mayurdw.fibretracker.data.helpers.getCurrentTime
+import com.mayurdw.fibretracker.model.domain.ConfirmData
+import com.mayurdw.fibretracker.model.domain.ConfirmDataType
+import com.mayurdw.fibretracker.model.domain.ConfirmDataType.Food
 import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsData
 import com.mayurdw.fibretracker.model.domain.ConfirmEntryDetailsIntent
 import com.mayurdw.fibretracker.model.entity.FoodEntity
@@ -36,18 +39,18 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun FoodQuantityScreenLayout(
     modifier: Modifier = Modifier,
-    uiData: FoodQuantityData,
+    uiData: ConfirmData,
     quantityUpdated: (foodQuantity: String?) -> Unit,
     onUserEvent: (detailsIntent: ConfirmEntryDetailsIntent) -> Unit,
 ) {
     val foodQuantity =
         rememberTextFieldState(
             initialText =
-                uiData.entity.singleServingSizeInGm.toString()
+                (uiData.type as Food).entity.singleServingSizeInGm.toString()
         )
     var fibreQuantity =
         if (foodQuantity.text.isNotBlank()) {
-            uiData.entity.fibrePerGram * foodQuantity.text.toString().toBigDecimal()
+            (uiData.type as Food).entity.fibrePerGram * foodQuantity.text.toString().toBigDecimal()
         } else {
             0
         }
@@ -57,7 +60,7 @@ fun FoodQuantityScreenLayout(
             quantityUpdated(newValue)
             if (newValue.isNotBlank()) {
                 fibreQuantity =
-                    uiData.entity.fibrePerGram * newValue.toBigDecimal()
+                    (uiData.type as Food).entity.fibrePerGram * newValue.toBigDecimal()
             }
         }
     }
@@ -75,7 +78,7 @@ fun FoodQuantityScreenLayout(
                         .fillMaxWidth(),
                     state = foodQuantity,
                     label = { Text(stringResource(R.string.quantity_in_grams)) },
-                    placeholder = { Text("${uiData.entity.singleServingSizeInGm}") },
+                    placeholder = { Text("${uiData.type.entity.singleServingSizeInGm}") },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Number
                     ),
@@ -107,7 +110,7 @@ fun FoodQuantityScreenLayout(
                         modifier = modifier,
                         text = stringResource(
                             R.string.var_gm,
-                            uiData.entity.fibrePerGram.toString()
+                            uiData.type.entity.fibrePerGram.toString()
                         ),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurface
@@ -137,7 +140,7 @@ fun FoodQuantityScreenLayout(
             }
         },
         detailsData = ConfirmEntryDetailsData(
-            title = uiData.entity.name,
+            title = uiData.type.entity.name,
             time = uiData.time,
             date = uiData.date,
             showDateDialog = uiData.showDateDialog,
@@ -156,11 +159,14 @@ private fun FoodQuantityScreenPreview(
 ) {
     FibreTrackerTheme {
         FoodQuantityScreenLayout(
-            uiData = FoodQuantityData(
+            uiData = ConfirmData(
+                type = Food(
                 entity = FoodEntity(
                     name = "Test",
                     singleServingSizeInGm = 40,
                     fibrePerMicroGram = 1_000_00
+                    ),
+                    foodQuantity = "4"
                 ),
                 time = getCurrentTime(),
                 date = getCurrentDate(),
@@ -168,7 +174,6 @@ private fun FoodQuantityScreenPreview(
                 showTimeDialog = false,
                 submitEnabled = false,
                 canDelete = false,
-                foodQuantity = "4"
             ),
             quantityUpdated = {}
         ) { _ ->

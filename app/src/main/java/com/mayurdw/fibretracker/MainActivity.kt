@@ -119,9 +119,7 @@ class MainActivity : ComponentActivity() {
 
                             EditEntryScreen(
                                 selectedFoodId = foodItem.selectedEntryId,
-                                onTypeSelected = {
-                                    navController.navigate(BowelQuality)
-                                }) {
+                            ) {
                                 navController.popBackStack(Home, false)
                             }
                         }
