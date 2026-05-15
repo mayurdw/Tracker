@@ -1,5 +1,6 @@
 [versions]
 agp = "9.2.1"
+composeCharts = "0.2.5"
 kotlin = "2.3.21"
 ksp = "2.3.2"
 coreKtx = "1.18.0"
@@ -20,11 +21,11 @@ datetime = "0.7.1"
 mockk = "1.14.9"
 robolectric = "4.16.1"
 foundation = "1.11.0"
-charts = "0.2.5"
 
 [libraries]
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+compose-charts = { module = "io.github.ehsannarmani:compose-charts", version.ref = "composeCharts" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -53,7 +54,6 @@ datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
-charts = { group = "io.github.ehsannarmani", name = "compose-charts", version.ref = "charts" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

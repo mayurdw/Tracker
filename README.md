@@ -16,11 +16,21 @@ Made with Jetpack Compose & Love. No AI used.
 
 #### Features:
 
-- [ ] Cleanup of Code
+- [x] Cleanup of Code
     - [x] UseCases Cleaned Up
+- [ ] Graph View of Fibre vs Poop Quality
+- [ ] Change FAB location
+- [ ] Change Bottom Nav Bar
+
+### 0.81
+
+- [ ] Cleanup of Code
     - [ ] Update Any UseCases Tests
     - [ ] ViewModel Cleanup
-- [ ] Graph View of Fibre vs Poop Quality
+- [ ] Plan Screen
+
+### 0.82
+
 - [ ] Settings Screen
 
 ### v0.9:
