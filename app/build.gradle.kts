@@ -10,15 +10,15 @@ plugins {
 }
 
 android {
-    namespace = "com.mayurdw.fibretracker"
+    namespace = "com.shypotato.tracker"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.mayurdw.fibretracker"
+        applicationId = "com.shypotato.tracker"
         minSdk = 29
         targetSdk = 36
-        versionCode = 8
-        versionName = "0.71"
+        versionCode = 1
+        versionName = "0.1"
 
         ksp {
             arg("room.schemaLocation", "$projectDir/schemas")

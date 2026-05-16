@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Fibre Tracker</string>
+    <string name="app_name">Tracker</string>
     <string name="home">Home</string>
     <string name="add_food">Add Food</string>
     <string name="add_amount">Add Amount</string>
