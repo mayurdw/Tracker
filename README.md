@@ -6,41 +6,36 @@ Made with Jetpack Compose & Love. No AI used.
 
 ## Release RoadMap
 
-### v0.71
-
-#### Bugs:
-
-- [ ] Investigate Why Poop disappears
-
-### 0.8:
+### 0.1:
 
 #### Features:
 
 - [x] Cleanup of Code
     - [x] UseCases Cleaned Up
-- [ ] Graph View of Fibre vs Poop Quality
-- [ ] Change FAB location
-- [ ] Change Bottom Nav Bar
+- [x] Graph View of Fibre vs Poop Quality
+- [x] Change FAB location
+- [x] Change Bottom Nav Bar
+- [x] Change Package to Tracker
+- [x] App Store Release
 
-### 0.81
+### 0.2
 
 - [ ] Cleanup of Code
     - [ ] Update Any UseCases Tests
     - [ ] ViewModel Cleanup
 - [ ] Plan Screen
 
-### 0.82
+### 0.3
 
 - [ ] Settings Screen
 
-### v0.9:
+### v0.4
 
 - [ ] Day Planning*
 - [ ] Package Name Change
 
 ### Backlog:
 
-- [ ] App Store Release**
 - [ ] UI Tests
 - [ ] Water Quantity Tracking
 
