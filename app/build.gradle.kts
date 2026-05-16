@@ -84,6 +84,7 @@ dependencies {
     implementation(libs.datetime)
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.compose.charts)
+    implementation(libs.animated.navigation.bar)
 
     testImplementation(libs.junit)
     testImplementation(libs.androidx.room.test)

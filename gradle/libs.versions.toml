@@ -1,5 +1,6 @@
 [versions]
 agp = "9.2.1"
+animatedNavigationBar = "1.0.0"
 composeCharts = "0.2.5"
 kotlin = "2.3.21"
 ksp = "2.3.2"
@@ -25,6 +26,7 @@ foundation = "1.11.0"
 [libraries]
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+animated-navigation-bar = { module = "com.exyte:animated-navigation-bar", version.ref = "animatedNavigationBar" }
 compose-charts = { module = "io.github.ehsannarmani:compose-charts", version.ref = "composeCharts" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
