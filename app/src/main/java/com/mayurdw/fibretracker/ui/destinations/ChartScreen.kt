@@ -1,15 +1,15 @@
 package com.mayurdw.fibretracker.ui.destinations
 
-import android.R
-import androidx.compose.animation.core.EaseInOutCubic
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -17,7 +17,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -27,7 +26,6 @@ import com.mayurdw.fibretracker.ui.screens.core.LoadingScreen
 import com.mayurdw.fibretracker.viewmodels.ChartData
 import com.mayurdw.fibretracker.viewmodels.ChartScreenViewModel
 import ir.ehsannarmani.compose_charts.LineChart
-import ir.ehsannarmani.compose_charts.models.AnimationMode
 import ir.ehsannarmani.compose_charts.models.DotProperties
 import ir.ehsannarmani.compose_charts.models.DrawStyle
 import ir.ehsannarmani.compose_charts.models.GridProperties
@@ -50,37 +48,49 @@ fun ChartScreen(
             LoadingScreen()
         }
 
-        is UIState.Error -> {}
+        is UIState.Error -> {
+            ChartScreenError()
+        }
+
         is UIState.Success<*> -> {
             val dataset = (state as UIState.Success<ChartData>).data
 
-            ChartScreenLayout()
+            ChartScreenLayout(dataset)
         }
     }
 }
 
-@PreviewLightDark
+@Composable
+fun ChartScreenError() {
+    Column(
+        modifier = Modifier
+            .background(colorScheme.background)
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+
+        Text(
+            modifier = Modifier
+                .fillMaxWidth(),
+            style = MaterialTheme.typography.headlineMedium,
+            text = "Visualiser not available"
+        )
+
+        Text(
+            modifier = Modifier
+                .fillMaxWidth(),
+            style = MaterialTheme.typography.bodyLarge,
+            text = "Not enough data. \n" +
+                    "This feature requires at least three days of data\n" +
+                    "Come back after three days"
+        )
+    }
+}
+
 @Composable
 fun ChartScreenLayout(
-    dataset: ChartData = ChartData(
-        dates = listOf(
-            "00",
-            "01",
-            "02"
-        ),
-        fibres = listOf(
-            23.0,
-            23.0,
-            23.0,
-            20.0,
-            15.0,
-            20.0,
-            15.0,
-            20.0,
-            15.0,
-            10.0
-        )
-    )
+    dataset: ChartData
 ) {
     Column(
         modifier = Modifier
@@ -91,7 +101,7 @@ fun ChartScreenLayout(
         LineChart(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(1.5f)
+                .aspectRatio(1.2f)
                 .padding(horizontal = 22.dp),
             data = remember {
                 listOf(
@@ -107,13 +117,13 @@ fun ChartScreenLayout(
                             enabled = true,
                             color = SolidColor(Color.White),
                             strokeWidth = 4.dp,
-                            radius = 7.dp,
+                            radius = 4.dp,
                             strokeColor = SolidColor(Color.Magenta),
                         )
                     ),
                     Line(
                         label = "Bowel Quality",
-                        values = BowelType.entries.map { it.ordinal.toDouble() },
+                        values = dataset.bowels,
                         color = SolidColor(Color.Green),
                         drawStyle = DrawStyle.Stroke(
                             width = 2.dp,
@@ -122,8 +132,8 @@ fun ChartScreenLayout(
                         dotProperties = DotProperties(
                             enabled = true,
                             color = SolidColor(Color.White),
-                            strokeWidth = 4.dp,
-                            radius = 7.dp,
+                            strokeWidth = 2.dp,
+                            radius = 3.dp,
                             strokeColor = SolidColor(Color.Green),
                         )
                     )
