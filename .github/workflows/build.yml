@@ -36,7 +36,7 @@ jobs:
         if: github.ref_type == 'tag'
         with:
           # The directory to find your release to sign
-          releaseDirectory: app/build/outputs/bundle/Release
+          releaseDirectory: app/build/outputs/bundle/release
           # The key used to sign your release in base64 encoded format
           signingKeyBase64: ${{ secrets.SIGNING_KEY }}
           # The key alias
