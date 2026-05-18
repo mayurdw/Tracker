@@ -29,7 +29,7 @@ jobs:
         run: ./gradlew assemble && ./gradlew bundle
 
       - name: Sign Android Release APK
-        # if: github.ref_type == 'tag'
+        if: github.ref_type == 'tag'
         uses: caffeine-soft/android-signer-action@v0
         with:
           release_dir: 'app/build/outputs'
@@ -44,4 +44,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref_type == 'tag'
         with:
-          files: build/release/signed/*.apk
+          files: |
+            build/release/outputs/**/*.apk
+            build/release/outputs/**/*.aab
