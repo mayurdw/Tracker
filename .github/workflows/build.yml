@@ -30,7 +30,7 @@ jobs:
 
       - name: Sign Android Release APK
         if: github.ref_type == 'tag'
-        uses: Tlaster/android-sign@v1.2.2
+        uses: MatiasG19/android-sign@v2
         with:
           releaseDirectory: |
             app/build/outputs/apk/release
