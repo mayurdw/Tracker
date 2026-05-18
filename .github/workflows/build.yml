@@ -29,8 +29,8 @@ jobs:
         run: ./gradlew assemble && ./gradlew bundle
 
       - name: Sign Android Release APK
-        if: github.ref_type == 'tag'
-        uses: noriab/sign-android-release@v5
+        # if: github.ref_type == 'tag'
+        uses: caffeine-soft/android-signer-action@v0
         with:
           releaseDirectory: |
             app/build/outputs/apk/release
