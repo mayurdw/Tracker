@@ -22,28 +22,34 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run Unit Tests
+        if: github.ref_type != 'tag'
         run: ./gradlew testDebugUnitTest
 
       - name: Build with Gradle
         if: github.ref_type == 'tag'
-        run: ./gradlew assemble && ./gradlew bundle
+        run: ./gradlew bundle
 
-      - name: Sign Android Release APK
+      - name: Android Sign 2
+        # You may pin to the exact commit or the version.
+        # uses: MatiasG19/android-sign@7d708e05499b8f04228c25d0ab1ce749c92de194
+        uses: MatiasG19/android-sign@2.2.1
         if: github.ref_type == 'tag'
-        uses: caffeine-soft/android-signer-action@v0
         with:
-          release_dir: 'app/build/outputs'
-          signing_key: ${{ secrets.SIGNING_KEY }}
+          # The directory to find your release to sign
+          releaseDirectory: app/build/outputs/bundle/Release/*.aab
+          # The key used to sign your release in base64 encoded format
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          # The key alias
           alias: ${{ secrets.KEYSTORE_ALIAS }}
-          key_store_password: ${{ secrets.KEYSTORE_PASSWORD }}
-          key_password: ${{ secrets.KEYSTORE_KEY_PASSWORD }}
-        env:
-          BUILD_TOOLS_VERSION: "36.0.0"
+          # The password to the keystore
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+          # The password for the key
+          keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD }}
+          # The output directory for sign, default to build/signed
+          output: build/release/signed
 
       - name: Release
         uses: softprops/action-gh-release@v2
         if: github.ref_type == 'tag'
         with:
-          files: |
-            app/build/outputs/apk/Release/*.apk
-            app/build/outputs/bundle/Release/*.aab
+          files: build/release/signed/*.aab
