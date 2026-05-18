@@ -32,14 +32,11 @@ jobs:
         # if: github.ref_type == 'tag'
         uses: caffeine-soft/android-signer-action@v0
         with:
-          releaseDirectory: |
-            app/build/outputs/apk/release
-            app/build/outputs/bundle/release
-          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
-          output: build/release/signed
+          releaseDir: 'app/build/outputs'
+          signing_key: ${{ secrets.SIGNING_KEY }}
           alias: ${{ secrets.KEYSTORE_ALIAS }}
-          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD }}
+          key_store_password: ${{ secrets.KEYSTORE_PASSWORD }}
+          key_password: ${{ secrets.KEYSTORE_KEY_PASSWORD }}
         env:
           BUILD_TOOLS_VERSION: "36.0.0"
 
