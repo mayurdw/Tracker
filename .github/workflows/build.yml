@@ -30,7 +30,7 @@ jobs:
 
       - name: Sign Android Release APK
         if: github.ref_type == 'tag'
-        uses: MatiasG19/android-sign@v2
+        uses: MatiasG19/android-sign@latest
         with:
           releaseDirectory: |
             app/build/outputs/apk/release
