@@ -45,5 +45,5 @@ jobs:
         if: github.ref_type == 'tag'
         with:
           files: |
-            app/build/release/outputs/apk/Release/*.apk
-            app/build/release/outputs/bundle/Release/*.aab
+            app/build/outputs/apk/Release/*.apk
+            app/build/outputs/bundle/Release/*.aab
